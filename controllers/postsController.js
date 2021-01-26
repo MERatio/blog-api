@@ -1,7 +1,37 @@
 const passport = require('passport');
 const { body, validationResult } = require('express-validator');
+const async = require('async');
 
+// Models
 const Post = require('../models/post');
+const Comment = require('../models/comment');
+
+exports.index = (req, res, next) => {
+	async.parallel(
+		{
+			posts(callback) {
+				Post.find({ published: true }, callback);
+			},
+			comments(callback) {
+				Comment.find(callback);
+			},
+		},
+		(err, results) => {
+			if (err) {
+				res.status(500).json({
+					posts: false,
+					comments: false,
+					errors: [{ msg: 'Something went wrong, please try again later' }],
+				});
+			} else {
+				res.json({
+					posts: results.posts,
+					comments: results.comments,
+				});
+			}
+		}
+	);
+};
 
 exports.create = [
 	passport.authenticate('jwt', { session: false }),
