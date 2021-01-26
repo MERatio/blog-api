@@ -3,10 +3,10 @@ const jwt = require('jsonwebtoken');
 
 exports.signIn = (req, res, next) => {
 	passport.authenticate('local', { session: false }, (err, user, info) => {
-		if (err) {
-			res.status(500).json({ message: info.message, user });
-		} else if (!user) {
-			res.status(404).json({ message: info.message, user });
+		if (err || !user) {
+			res
+				.status(err ? 500 : 404)
+				.json({ user, messages: { warning: [info.message] } });
 		} else {
 			req.login(user, { session: false }, (err) => {
 				if (err) {
