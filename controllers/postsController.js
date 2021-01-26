@@ -40,11 +40,18 @@ exports.create = [
 				published: false,
 			});
 			post.save((err, post) => {
-				// Successful
-				res.json({
-					post,
-					errors: false,
-				});
+				if (err) {
+					res.status(500).json({
+						post: false,
+						errors: [{ msg: 'Something went wrong, please try again later' }],
+					});
+				} else {
+					// Successful
+					res.json({
+						post,
+						errors: false,
+					});
+				}
 			});
 		}
 	},
