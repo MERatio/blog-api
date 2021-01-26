@@ -38,7 +38,7 @@ passport.use(
 			secretOrKey: process.env.JWT_SECRET,
 		},
 		(jwtPayload, done) => {
-			User.findById(jwtPayload._id, (err, user) => {
+			User.findById(jwtPayload.userId, (err, user) => {
 				err ? done(err) : done(null, user);
 			});
 		}
