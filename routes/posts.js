@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 
+const postsController = require('../controllers/postsController');
+
 router.get(
 	'/',
 	passport.authenticate('jwt', { session: false }),
@@ -15,5 +17,7 @@ router.get(
 		});
 	}
 );
+
+router.post('/', postsController.create);
 
 module.exports = router;
