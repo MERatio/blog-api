@@ -6,7 +6,7 @@ exports.signIn = (req, res, next) => {
 		if (err || !user) {
 			res
 				.status(err ? 500 : 404)
-				.json({ user, messages: { warning: [info.message] } });
+				.json({ messages: { warning: [info.message] } });
 		} else {
 			req.login(user, { session: false }, (err) => {
 				if (err) {

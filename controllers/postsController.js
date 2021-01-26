@@ -19,8 +19,6 @@ exports.index = (req, res, next) => {
 		(err, results) => {
 			if (err) {
 				res.status(500).json({
-					posts: false,
-					comments: false,
 					errors: [{ msg: 'Something went wrong, please try again later' }],
 				});
 			} else {
@@ -56,10 +54,7 @@ exports.create = [
 		const errors = validationResult(req);
 		if (!errors.isEmpty()) {
 			// There are errors.
-			res.json({
-				post: false,
-				errors: errors.array(),
-			});
+			res.json({ errors: errors.array() });
 		} else {
 			// Data is valid.
 			// Create an Post object with escaped and trimmed data.
@@ -72,15 +67,11 @@ exports.create = [
 			post.save((err, post) => {
 				if (err) {
 					res.status(500).json({
-						post: false,
 						errors: [{ msg: 'Something went wrong, please try again later' }],
 					});
 				} else {
 					// Successful
-					res.json({
-						post,
-						errors: false,
-					});
+					res.json({ post });
 				}
 			});
 		}
