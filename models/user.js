@@ -13,4 +13,12 @@ const UserSchema = new Schema({
 	password: { type: String, required: true },
 });
 
+// Virtuals
+UserSchema.virtual('forPublic').get(function () {
+	return {
+		_id: this.id,
+		username: this.username,
+	};
+});
+
 module.exports = mongoose.model('User', UserSchema);
