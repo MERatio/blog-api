@@ -122,17 +122,17 @@ const createComments = (cb) => {
     [
       (callback) => {
         commentCreate(
-          posts[1],
+          posts[0],
           'commenter1',
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin sit amet nulla lorem. Duis ullamcorper vitae mi eleifend tempor. Mauris at odio vel ante efficitur fermentum vitae fringilla turpis.',
+          'Comment on unpublished post (the post is published before when someone commented on it then became unpublished)',
           callback
         );
       },
       (callback) => {
         commentCreate(
-          posts[1],
+          posts[0],
           'commenter2',
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque vestibulum elit vel nisl dapibus hendrerit. Nam ac luctus purus, at fringilla leo. ',
+          'Comment on unpublished post (the post is published before when someone commented on it then became unpublished)',
           callback
         );
       },
