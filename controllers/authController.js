@@ -18,12 +18,10 @@ exports.signIn = (req, res, next) => {
 					  and return it in the response.
 					*/
 					const jwtPayload = { userId: user._id };
-					// Only get _id, and username property of user obj
-					const userData = (({ _id, username }) => ({ _id, username }))(user);
 					const token = jwt.sign(jwtPayload, process.env.JWT_SECRET, {
 						expiresIn: '7d',
 					});
-					res.json({ user: userData, token });
+					res.json({ user: user.forPublic });
 				}
 			});
 		}
