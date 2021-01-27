@@ -8,33 +8,56 @@ const Comment = require('../models/comment');
 
 exports.index = [
 	(req, res, next) => {
-		if (req.headers.authorization) {
-			passport.authenticate('jwt', { session: false }, (err, user) => {
-				if (err) {
-					res.status(500).json({
-						errors: [{ msg: 'Something went wrong, please try again later' }],
-					});
-				} else if (!user) {
-					res.status(401).send('Unauthorized');
+		passport.authenticate('jwt', { session: false }, (err, user) => {
+			if (err) {
+				res.status(500).json({
+					errors: [{ msg: 'Something went wrong, please try again later' }],
+				});
+			} else if (!user) {
+				if (req.headers.authorization) {
+					res.status(401).send('test - Unauthorized');
 				} else {
-					req.user = user;
+					next();
 				}
+			} else {
+				req.user = user;
 				next();
-			})(req, res, next);
-		} else {
-			next();
-		}
+			}
+		})(req, res, next);
 	},
 	(req, res, next) => {
-		async.parallel(
-			{
-				posts(callback) {
-					Post.find(req.user ? {} : { published: true }, callback);
+		async.waterfall(
+			[
+				(callback) => {
+					if (req.user) {
+						Post.find(callback);
+					} else {
+						Post.find({ published: true }, callback);
+					}
 				},
-				comments(callback) {
-					Comment.find(callback);
+				(posts, callback) => {
+					if (req.user) {
+						Comment.find().exec((err, comments) => {
+							if (err) {
+								callback(err, null, null);
+							} else {
+								callback(null, { posts, comments });
+							}
+						});
+					} else {
+						const publishedPostsIds = posts.map(({ _id }) => _id);
+						Comment.find({ post: { $in: publishedPostsIds } }).exec(
+							(err, comments) => {
+								if (err) {
+									callback(err, null, null);
+								} else {
+									callback(null, { posts, comments });
+								}
+							}
+						);
+					}
 				},
-			},
+			],
 			(err, results) => {
 				if (err) {
 					res.status(500).json({
