@@ -6,30 +6,51 @@ const async = require('async');
 const Post = require('../models/post');
 const Comment = require('../models/comment');
 
-exports.index = (req, res, next) => {
-	async.parallel(
-		{
-			posts(callback) {
-				Post.find({ published: true }, callback);
-			},
-			comments(callback) {
-				Comment.find(callback);
-			},
-		},
-		(err, results) => {
-			if (err) {
-				res.status(500).json({
-					errors: [{ msg: 'Something went wrong, please try again later' }],
-				});
-			} else {
-				res.json({
-					posts: results.posts,
-					comments: results.comments,
-				});
-			}
+exports.index = [
+	(req, res, next) => {
+		if (req.headers.authorization) {
+			passport.authenticate('jwt', { session: false }, (err, user) => {
+				if (err) {
+					res.status(500).json({
+						errors: [{ msg: 'Something went wrong, please try again later' }],
+					});
+				} else if (!user) {
+					res.status(401).send('Unauthorized');
+				} else {
+					req.user = user;
+				}
+				next();
+			})(req, res, next);
+		} else {
+			next();
 		}
-	);
-};
+	},
+	(req, res, next) => {
+		async.parallel(
+			{
+				posts(callback) {
+					Post.find(req.user ? {} : { published: true }, callback);
+				},
+				comments(callback) {
+					Comment.find(callback);
+				},
+			},
+			(err, results) => {
+				if (err) {
+					res.status(500).json({
+						errors: [{ msg: 'Something went wrong, please try again later' }],
+					});
+				} else {
+					res.json({
+						user: req.user ? req.user.forPublic : false,
+						posts: results.posts,
+						comments: results.comments,
+					});
+				}
+			}
+		);
+	},
+];
 
 exports.create = [
 	passport.authenticate('jwt', { session: false }),
