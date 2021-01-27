@@ -21,7 +21,7 @@ exports.signIn = (req, res, next) => {
 					const token = jwt.sign(jwtPayload, process.env.JWT_SECRET, {
 						expiresIn: '7d',
 					});
-					res.json({ user: user.forPublic });
+					res.json({ token, user: user.forPublic });
 				}
 			});
 		}
