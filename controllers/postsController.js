@@ -54,7 +54,10 @@ exports.create = [
 		const errors = validationResult(req);
 		if (!errors.isEmpty()) {
 			// There are errors.
-			res.json({ errors: errors.array() });
+			res.json({
+				post: req.body,
+				errors: errors.array(),
+			});
 		} else {
 			// Data is valid.
 			// Create an Post object with escaped and trimmed data.
