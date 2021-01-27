@@ -136,6 +136,22 @@ const createComments = (cb) => {
           callback
         );
       },
+      (callback) => {
+        commentCreate(
+          posts[1],
+          'commenter3',
+          'Comment on published post',
+          callback
+        );
+      },
+      (callback) => {
+        commentCreate(
+          posts[1],
+          'commenter4',
+          'Comment on published post',
+          callback
+        );
+      },
     ],
     // Optional callback
     cb
