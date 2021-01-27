@@ -23,7 +23,7 @@ exports.signIn = (req, res, next) => {
 					const token = jwt.sign(jwtPayload, process.env.JWT_SECRET, {
 						expiresIn: '7d',
 					});
-					res.json({ userData, token });
+					res.json({ user: userData, token });
 				}
 			});
 		}
