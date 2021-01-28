@@ -12,4 +12,6 @@ router.get('/:id', postsController.show);
 
 router.get('/:id/edit', postsController.edit);
 
+router.post('/:id', postsController.update);
+
 module.exports = router;
