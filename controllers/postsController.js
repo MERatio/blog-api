@@ -2,29 +2,15 @@ const passport = require('passport');
 const { body, validationResult } = require('express-validator');
 const async = require('async');
 
+// Lib
+const beforeMiddlewares = require('../lib/beforeMiddlewares');
+
 // Models
 const Post = require('../models/post');
 const Comment = require('../models/comment');
 
 exports.index = [
-	(req, res, next) => {
-		passport.authenticate('jwt', { session: false }, (err, user) => {
-			if (err) {
-				res.status(500).json({
-					errors: [{ msg: 'Something went wrong, please try again later' }],
-				});
-			} else if (!user) {
-				if (req.headers.authorization) {
-					res.status(401).send('test - Unauthorized');
-				} else {
-					next();
-				}
-			} else {
-				req.user = user;
-				next();
-			}
-		})(req, res, next);
-	},
+	beforeMiddlewares.optionalJwtAuth,
 	(req, res, next) => {
 		async.waterfall(
 			[
