@@ -10,4 +10,6 @@ router.post('/', postsController.create);
 
 router.get('/:id', postsController.show);
 
+router.get('/:id/edit', postsController.edit);
+
 module.exports = router;
