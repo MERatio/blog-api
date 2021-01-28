@@ -10,7 +10,6 @@ const Post = require('../models/post');
 const Comment = require('../models/comment');
 
 exports.index = [
-	beforeMiddlewares.optionalJwtAuth,
 	(req, res, next) => {
 		async.waterfall(
 			[
@@ -62,7 +61,7 @@ exports.index = [
 ];
 
 exports.create = [
-	passport.authenticate('jwt', { session: false }),
+	beforeMiddlewares.jwtAuthenticated,
 	// Validate and sanitise fields.
 	body('title')
 		.trim()
@@ -85,6 +84,7 @@ exports.create = [
 		if (!errors.isEmpty()) {
 			// There are errors.
 			res.json({
+				user: req.user ? req.user.forPublic : false,
 				post: req.body,
 				errors: errors.array(),
 			});
@@ -100,11 +100,15 @@ exports.create = [
 			post.save((err, post) => {
 				if (err) {
 					res.status(500).json({
+						user: req.user ? req.user.forPublic : false,
 						errors: [{ msg: 'Something went wrong, please try again later' }],
 					});
 				} else {
 					// Successful
-					res.json({ post });
+					res.json({
+						user: req.user ? req.user.forPublic : false,
+						post,
+					});
 				}
 			});
 		}
@@ -112,7 +116,6 @@ exports.create = [
 ];
 
 exports.show = [
-	beforeMiddlewares.optionalJwtAuth,
 	beforeMiddlewares.validMongooseObjectIdParams,
 	(req, res, next) => {
 		async.parallel(
@@ -131,10 +134,12 @@ exports.show = [
 			(err, results) => {
 				if (err) {
 					res.status(500).json({
+						user: req.user ? req.user.forPublic : false,
 						errors: [{ msg: 'Something went wrong, please try again later' }],
 					});
 				} else if (results.post === null) {
 					res.status(404).json({
+						user: req.user ? req.user.forPublic : false,
 						errors: [{ msg: 'Post not found' }],
 					});
 				} else {
@@ -150,7 +155,7 @@ exports.show = [
 ];
 
 exports.edit = [
-	passport.authenticate('jwt', { session: false }),
+	beforeMiddlewares.jwtAuthenticated,
 	beforeMiddlewares.validMongooseObjectIdParams,
 	(req, res, next) => {
 		Post.findById(req.params.id).exec((err, post) => {
@@ -161,17 +166,21 @@ exports.edit = [
 				next(err);
 			} else if (post === null) {
 				res.status(404).json({
+					user: req.user ? req.user.forPublic : false,
 					errors: [{ msg: 'Post not found' }],
 				});
 			} else {
-				res.json({ post });
+				res.json({
+					user: req.user ? req.user.forPublic : false,
+					post,
+				});
 			}
 		});
 	},
 ];
 
 exports.update = [
-	passport.authenticate('jwt', { session: false }),
+	beforeMiddlewares.jwtAuthenticated,
 	// Validate and sanitise fields.
 	body('title')
 		.trim()
@@ -197,6 +206,7 @@ exports.update = [
 		if (!errors.isEmpty()) {
 			// There are errors.
 			res.json({
+				user: req.user ? req.user.forPublic : false,
 				post: req.body,
 				errors: errors.array(),
 			});
@@ -212,15 +222,20 @@ exports.update = [
 			});
 			// Update the record.
 			Post.findByIdAndUpdate(req.params.id, post, {
+				user: req.user ? req.user.forPublic : false,
 				new: true,
 				runValidators: true,
 			}).exec((err, updatedPost) => {
 				if (err) {
 					res.status(500).json({
+						user: req.user ? req.user.forPublic : false,
 						errors: [{ msg: 'Something went wrong, please try again later' }],
 					});
 				} else {
-					res.json({ updatedPost });
+					res.json({
+						user: req.user ? req.user.forPublic : false,
+						updatedPost,
+					});
 				}
 			});
 		}
