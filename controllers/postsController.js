@@ -113,6 +113,7 @@ exports.create = [
 
 exports.show = [
 	beforeMiddlewares.optionalJwtAuth,
+	beforeMiddlewares.validMongooseObjectIdParams,
 	(req, res, next) => {
 		async.parallel(
 			{
