@@ -148,3 +148,24 @@ exports.show = [
 		);
 	},
 ];
+
+exports.edit = [
+	passport.authenticate('jwt', { session: false }),
+	beforeMiddlewares.validMongooseObjectIdParams,
+	(req, res, next) => {
+		Post.findById(req.params.id).exec((err, post) => {
+			if (err) {
+				res.status(500).json({
+					errors: [{ msg: 'Something went wrong, please try again later' }],
+				});
+				next(err);
+			} else if (post === null) {
+				res.status(404).json({
+					errors: [{ msg: 'Post not found' }],
+				});
+			} else {
+				res.json({ post });
+			}
+		});
+	},
+];
