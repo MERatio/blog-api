@@ -110,3 +110,40 @@ exports.create = [
 		}
 	},
 ];
+
+exports.show = [
+	beforeMiddlewares.optionalJwtAuth,
+	(req, res, next) => {
+		async.parallel(
+			{
+				post(callback) {
+					if (req.user) {
+						Post.findById(req.params.id, callback);
+					} else {
+						Post.findOne({ _id: req.params.id, published: true }, callback);
+					}
+				},
+				postComments(callback) {
+					Comment.find({ post: req.params.id }, callback);
+				},
+			},
+			(err, results) => {
+				if (err) {
+					res.status(500).json({
+						errors: [{ msg: 'Something went wrong, please try again later' }],
+					});
+				} else if (results.post === null) {
+					res.status(404).json({
+						errors: [{ msg: 'Post not found' }],
+					});
+				} else {
+					res.json({
+						user: req.user ? req.user.forPublic : false,
+						post: results.post,
+						postComments: results.postComments,
+					});
+				}
+			}
+		);
+	},
+];
