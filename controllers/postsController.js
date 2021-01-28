@@ -181,6 +181,7 @@ exports.edit = [
 
 exports.update = [
 	beforeMiddlewares.jwtAuthenticated,
+	beforeMiddlewares.validMongooseObjectIdParams,
 	// Validate and sanitise fields.
 	body('title')
 		.trim()
