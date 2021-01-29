@@ -115,7 +115,9 @@ exports.create = [
 ];
 
 exports.show = [
-	beforeMiddlewares.validMongooseObjectIdParams({ postId: 'Post not found' }),
+	beforeMiddlewares.validMongooseObjectIdRouteParams({
+		postId: 'Post not found',
+	}),
 	(req, res, next) => {
 		async.parallel(
 			{
@@ -155,7 +157,9 @@ exports.show = [
 
 exports.edit = [
 	beforeMiddlewares.jwtAuthenticated,
-	beforeMiddlewares.validMongooseObjectIdParams({ postId: 'Post not found' }),
+	beforeMiddlewares.validMongooseObjectIdRouteParams({
+		postId: 'Post not found',
+	}),
 	(req, res, next) => {
 		Post.findById(req.params.postId).exec((err, post) => {
 			if (err) {
@@ -180,7 +184,9 @@ exports.edit = [
 
 exports.update = [
 	beforeMiddlewares.jwtAuthenticated,
-	beforeMiddlewares.validMongooseObjectIdParams({ postId: 'Post not found' }),
+	beforeMiddlewares.validMongooseObjectIdRouteParams({
+		postId: 'Post not found',
+	}),
 	// Validate and sanitise fields.
 	body('title')
 		.trim()
@@ -249,7 +255,9 @@ exports.update = [
 
 exports.destroy = [
 	beforeMiddlewares.jwtAuthenticated,
-	beforeMiddlewares.validMongooseObjectIdParams({ postId: 'Post not found' }),
+	beforeMiddlewares.validMongooseObjectIdRouteParams({
+		postId: 'Post not found',
+	}),
 	(req, res, next) => {
 		Post.findByIdAndDelete(req.params.postId, (err, post) => {
 			if (err) {
