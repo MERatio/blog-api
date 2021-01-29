@@ -13,4 +13,6 @@ router.get('/:id/edit', postsController.edit);
 
 router.put('/:id', postsController.update);
 
+router.delete('/:id', postsController.destroy);
+
 module.exports = router;
