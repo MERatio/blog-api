@@ -116,7 +116,7 @@ exports.create = [
 ];
 
 exports.show = [
-	beforeMiddlewares.validMongooseObjectIdParams,
+	beforeMiddlewares.validMongooseObjectIdParams('Post not found'),
 	(req, res, next) => {
 		async.parallel(
 			{
@@ -156,7 +156,7 @@ exports.show = [
 
 exports.edit = [
 	beforeMiddlewares.jwtAuthenticated,
-	beforeMiddlewares.validMongooseObjectIdParams,
+	beforeMiddlewares.validMongooseObjectIdParams('Post not found'),
 	(req, res, next) => {
 		Post.findById(req.params.id).exec((err, post) => {
 			if (err) {
@@ -181,7 +181,7 @@ exports.edit = [
 
 exports.update = [
 	beforeMiddlewares.jwtAuthenticated,
-	beforeMiddlewares.validMongooseObjectIdParams,
+	beforeMiddlewares.validMongooseObjectIdParams('Post not found'),
 	// Validate and sanitise fields.
 	body('title')
 		.trim()
