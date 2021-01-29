@@ -226,7 +226,7 @@ exports.update = [
 				user: req.user ? req.user.forPublic : false,
 				new: true,
 				runValidators: true,
-			}).exec((err, updatedPost) => {
+			}).exec((err, post) => {
 				if (err) {
 					res.status(500).json({
 						user: req.user ? req.user.forPublic : false,
@@ -235,7 +235,7 @@ exports.update = [
 				} else {
 					res.json({
 						user: req.user ? req.user.forPublic : false,
-						updatedPost,
+						post,
 					});
 				}
 			});
