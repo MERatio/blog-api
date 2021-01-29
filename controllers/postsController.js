@@ -232,6 +232,11 @@ exports.update = [
 						user: req.user ? req.user.forPublic : false,
 						errors: [{ msg: 'Something went wrong, please try again later' }],
 					});
+				} else if (post === null) {
+					res.status(404).json({
+						user: req.user ? req.user.forPublic : false,
+						errors: [{ msg: 'Post not found' }],
+					});
 				} else {
 					res.json({
 						user: req.user ? req.user.forPublic : false,
