@@ -1,4 +1,3 @@
-const passport = require('passport');
 const { body, validationResult } = require('express-validator');
 const async = require('async');
 
