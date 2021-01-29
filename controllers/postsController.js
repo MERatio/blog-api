@@ -121,13 +121,13 @@ exports.show = [
 			{
 				post(callback) {
 					if (req.user) {
-						Post.findById(req.params.id, callback);
+						Post.findById(req.params.postId, callback);
 					} else {
-						Post.findOne({ _id: req.params.id, published: true }, callback);
+						Post.findOne({ _id: req.params.postId, published: true }, callback);
 					}
 				},
 				postComments(callback) {
-					Comment.find({ post: req.params.id }, callback);
+					Comment.find({ post: req.params.postId }, callback);
 				},
 			},
 			(err, results) => {
@@ -157,7 +157,7 @@ exports.edit = [
 	beforeMiddlewares.jwtAuthenticated,
 	beforeMiddlewares.validMongooseObjectIdParams('Post not found'),
 	(req, res, next) => {
-		Post.findById(req.params.id).exec((err, post) => {
+		Post.findById(req.params.postId).exec((err, post) => {
 			if (err) {
 				res.status(500).json({
 					errors: [{ msg: 'Something went wrong, please try again later' }],
@@ -218,10 +218,10 @@ exports.update = [
 				title: req.body.title,
 				body: req.body.body,
 				published: req.body.published,
-				_id: req.params.id, // This is required, or a new ID will be assigned!
+				_id: req.params.postId, // This is required, or a new ID will be assigned!
 			});
 			// Update the record.
-			Post.findByIdAndUpdate(req.params.id, post, {
+			Post.findByIdAndUpdate(req.params.postId, post, {
 				user: req.user ? req.user.forPublic : false,
 				new: true,
 				runValidators: true,
@@ -251,7 +251,7 @@ exports.destroy = [
 	beforeMiddlewares.jwtAuthenticated,
 	beforeMiddlewares.validMongooseObjectIdParams('Post not found'),
 	(req, res, next) => {
-		Post.findByIdAndDelete(req.params.id, (err, post) => {
+		Post.findByIdAndDelete(req.params.postId, (err, post) => {
 			if (err) {
 				res.status(500).json({
 					user: req.user ? req.user.forPublic : false,

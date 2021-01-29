@@ -7,12 +7,12 @@ router.get('/', postsController.index);
 
 router.post('/', postsController.create);
 
-router.get('/:id', postsController.show);
+router.get('/:postId', postsController.show);
 
-router.get('/:id/edit', postsController.edit);
+router.get('/:postId/edit', postsController.edit);
 
-router.put('/:id', postsController.update);
+router.put('/:postId', postsController.update);
 
-router.delete('/:id', postsController.destroy);
+router.delete('/:postId', postsController.destroy);
 
 module.exports = router;
