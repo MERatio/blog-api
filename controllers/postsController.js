@@ -44,9 +44,7 @@ exports.index = [
 			],
 			(err, results) => {
 				if (err) {
-					res.status(500).json({
-						errors: [{ msg: 'Something went wrong, please try again later' }],
-					});
+					next(err);
 				} else {
 					res.json({
 						user: req.user ? req.user.forPublic : false,
@@ -98,10 +96,7 @@ exports.create = [
 			});
 			post.save((err, post) => {
 				if (err) {
-					res.status(500).json({
-						user: req.user ? req.user.forPublic : false,
-						errors: [{ msg: 'Something went wrong, please try again later' }],
-					});
+					next(err);
 				} else {
 					// Successful
 					res.json({
@@ -134,15 +129,11 @@ exports.show = [
 			},
 			(err, results) => {
 				if (err) {
-					res.status(500).json({
-						user: req.user ? req.user.forPublic : false,
-						errors: [{ msg: 'Something went wrong, please try again later' }],
-					});
+					next(err);
 				} else if (results.post === null) {
-					res.status(404).json({
-						user: req.user ? req.user.forPublic : false,
-						errors: [{ msg: 'Post not found' }],
-					});
+					const err = new Error('Post not found');
+					err.status = 404;
+					next(err);
 				} else {
 					res.json({
 						user: req.user ? req.user.forPublic : false,
@@ -163,15 +154,11 @@ exports.edit = [
 	(req, res, next) => {
 		Post.findById(req.params.postId).exec((err, post) => {
 			if (err) {
-				res.status(500).json({
-					errors: [{ msg: 'Something went wrong, please try again later' }],
-				});
 				next(err);
 			} else if (post === null) {
-				res.status(404).json({
-					user: req.user ? req.user.forPublic : false,
-					errors: [{ msg: 'Post not found' }],
-				});
+				const err = new Error('Post not found');
+				err.status = 404;
+				next(err);
 			} else {
 				res.json({
 					user: req.user ? req.user.forPublic : false,
@@ -233,15 +220,11 @@ exports.update = [
 				runValidators: true,
 			}).exec((err, post) => {
 				if (err) {
-					res.status(500).json({
-						user: req.user ? req.user.forPublic : false,
-						errors: [{ msg: 'Something went wrong, please try again later' }],
-					});
+					next(err);
 				} else if (post === null) {
-					res.status(404).json({
-						user: req.user ? req.user.forPublic : false,
-						errors: [{ msg: 'Post not found' }],
-					});
+					const err = new Error('Post not found');
+					err.status = 404;
+					next(err);
 				} else {
 					res.json({
 						user: req.user ? req.user.forPublic : false,
@@ -261,22 +244,15 @@ exports.destroy = [
 	(req, res, next) => {
 		Post.findByIdAndDelete(req.params.postId, (err, post) => {
 			if (err) {
-				res.status(500).json({
-					user: req.user ? req.user.forPublic : false,
-					errors: [{ msg: 'Something went wrong, please try again later' }],
-				});
+				next(err);
 			} else if (post === null) {
-				res.status(404).json({
-					user: req.user ? req.user.forPublic : false,
-					errors: [{ msg: 'Post not found' }],
-				});
+				const err = new Error('Post not found');
+				err.status = 404;
+				next(err);
 			} else {
 				Comment.deleteMany({ post: post._id }, (err) => {
 					if (err) {
-						res.status(500).json({
-							user: req.user ? req.user.forPublic : false,
-							errors: [{ msg: 'Something went wrong, please try again later' }],
-						});
+						next(err);
 					} else {
 						res.json({
 							user: req.user ? req.user.forPublic : false,

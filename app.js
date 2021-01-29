@@ -29,4 +29,12 @@ app.use(beforeMiddlewares.setUserUsingJwtAuth);
 app.use('/auth', authRouter);
 app.use('/posts', postsRouter);
 
+// Error handler
+app.use((err, req, res, next) => {
+	res.status(err.status ? err.status : 500).send({
+		user: req.user ? req.user.forPublic : false,
+		err: { ...err, message: err.message },
+	});
+});
+
 module.exports = app;
