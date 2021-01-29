@@ -242,3 +242,37 @@ exports.update = [
 		}
 	},
 ];
+
+exports.destroy = [
+	beforeMiddlewares.jwtAuthenticated,
+	beforeMiddlewares.validMongooseObjectIdParams('Post not found'),
+	(req, res, next) => {
+		Post.findByIdAndDelete(req.params.id, (err, post) => {
+			if (err) {
+				res.status(500).json({
+					user: req.user ? req.user.forPublic : false,
+					errors: [{ msg: 'Something went wrong, please try again later' }],
+				});
+			} else if (post === null) {
+				res.status(404).json({
+					user: req.user ? req.user.forPublic : false,
+					errors: [{ msg: 'Post not found' }],
+				});
+			} else {
+				Comment.deleteMany({ post: post._id }, (err) => {
+					if (err) {
+						res.status(500).json({
+							user: req.user ? req.user.forPublic : false,
+							errors: [{ msg: 'Something went wrong, please try again later' }],
+						});
+					} else {
+						res.json({
+							user: req.user ? req.user.forPublic : false,
+							post,
+						});
+					}
+				});
+			}
+		});
+	},
+];
