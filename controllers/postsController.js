@@ -114,35 +114,30 @@ exports.show = [
 		postId: 'Post not found',
 	}),
 	(req, res, next) => {
-		async.parallel(
-			{
-				post(callback) {
-					if (req.user) {
-						Post.findById(req.params.postId, callback);
+		Post.findOne({
+			_id: req.params.postId,
+			...(!req.user && { published: true }),
+		}).exec((err, post) => {
+			if (err) {
+				next(err);
+			} else if (post === null) {
+				const err = new Error('Post not found');
+				err.status = 404;
+				next(err);
+			} else {
+				Comment.find({ post: req.params.postId }).exec((err, comments) => {
+					if (err) {
+						next(err);
 					} else {
-						Post.findOne({ _id: req.params.postId, published: true }, callback);
+						res.json({
+							user: req.user ? req.user.forPublic : false,
+							post,
+							comments,
+						});
 					}
-				},
-				postComments(callback) {
-					Comment.find({ post: req.params.postId }, callback);
-				},
-			},
-			(err, results) => {
-				if (err) {
-					next(err);
-				} else if (results.post === null) {
-					const err = new Error('Post not found');
-					err.status = 404;
-					next(err);
-				} else {
-					res.json({
-						user: req.user ? req.user.forPublic : false,
-						post: results.post,
-						postComments: results.postComments,
-					});
-				}
+				});
 			}
-		);
+		});
 	},
 ];
 
