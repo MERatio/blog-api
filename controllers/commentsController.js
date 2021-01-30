@@ -44,6 +44,7 @@ exports.new = [
 		postId: 'Post not found',
 	}),
 	(req, res, next) => {
+		// Post should be published before commenting.
 		Post.findOne({ _id: req.params.postId, published: true }).exec(
 			(err, post) => {
 				if (err) {
