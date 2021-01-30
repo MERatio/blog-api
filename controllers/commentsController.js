@@ -14,6 +14,9 @@ exports.index = [
 	(req, res, next) => {
 		Post.findOne({
 			_id: req.params.postId,
+			/* Authenticated user can get published or unpublished post
+				 Unauthorize user can only see published post
+			*/
 			...(!req.user && { published: true }),
 		}).exec((err, post) => {
 			if (err) {
@@ -67,7 +70,7 @@ exports.create = [
 	beforeMiddlewares.validMongooseObjectIdRouteParams({
 		postId: 'Post not found',
 	}),
-	// If admin is the one commenting user their username.
+	// If user is authenticated, use their username as comment.username.
 	(req, res, next) => {
 		if (req.user) {
 			req.body.username = req.user.username;
