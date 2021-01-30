@@ -12,6 +12,7 @@ const beforeMiddlewares = require('./lib/beforeMiddlewares');
 // Require routers
 const authRouter = require('./routes/auth');
 const postsRouter = require('./routes/posts');
+const commentsRouter = require('./routes/comments');
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use(beforeMiddlewares.setUserUsingJwtAuth);
 // Use the routers
 app.use('/auth', authRouter);
 app.use('/posts', postsRouter);
+app.use('/posts/:postId/comments', commentsRouter);
 
 // Error handler
 app.use((err, req, res, next) => {
