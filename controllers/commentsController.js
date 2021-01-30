@@ -35,3 +35,27 @@ exports.index = [
 		});
 	},
 ];
+
+exports.new = [
+	beforeMiddlewares.jwtAuthenticated,
+	beforeMiddlewares.validMongooseObjectIdRouteParams({
+		postId: 'Post not found',
+	}),
+	(req, res, next) => {
+		Post.findOne({ _id: req.params.postId, published: true }).exec(
+			(err, post) => {
+				if (err) {
+					next(err);
+				} else if (post === null) {
+					const err = new Error('Post not found');
+					err.status = 404;
+					next(err);
+				} else {
+					res.json({
+						user: req.user.forPublic,
+					});
+				}
+			}
+		);
+	},
+];
