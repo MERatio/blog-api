@@ -9,7 +9,6 @@ const CommentSchema = new Schema(
 			type: String,
 			required: true,
 			maxlength: 20,
-			unique: true,
 		},
 		body: { type: String, required: true, maxlength: 200 },
 	},
