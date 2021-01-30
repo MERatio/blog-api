@@ -138,3 +138,45 @@ exports.create = [
 		}
 	},
 ];
+
+exports.show = [
+	beforeMiddlewares.validMongooseObjectIdRouteParams({
+		postId: 'Post not found',
+		commentId: 'Comment not found',
+	}),
+	(req, res, next) => {
+		Post.findOne({
+			_id: req.params.postId,
+			/* Authenticated user can get published or unpublished post
+				 Unauthorize user can only see published post
+			*/
+			...(!req.user && { published: true }),
+		}).exec((err, post) => {
+			if (err) {
+				next(err);
+			} else if (post === null) {
+				const err = new Error('Post not found');
+				err.status = 404;
+				next(err);
+			} else {
+				Comment.findOne({
+					post: req.params.postId,
+					_id: req.params.commentId,
+				}).exec((err, comment) => {
+					if (err) {
+						next(err);
+					} else if (comment === null) {
+						const err = new Error('Comment not found');
+						err.status = 404;
+						next(err);
+					} else {
+						res.json({
+							user: req.user ? req.user.forPublic : false,
+							comment,
+						});
+					}
+				});
+			}
+		});
+	},
+];
