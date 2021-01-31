@@ -4,12 +4,8 @@ const Schema = mongoose.Schema;
 
 const CommentSchema = new Schema(
 	{
+		author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 		post: { type: Schema.Types.ObjectId, ref: 'Post', required: true },
-		username: {
-			type: String,
-			required: true,
-			maxlength: 20,
-		},
 		body: { type: String, required: true, maxlength: 200 },
 	},
 	{
