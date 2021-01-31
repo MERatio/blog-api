@@ -34,8 +34,8 @@ const users = [];
 const posts = [];
 const comments = [];
 
-const userCreate = (username, password, cb) => {
-  const userDetail = { username, password };
+const userCreate = (firstName, lastName, username, password, admin, cb) => {
+  const userDetail = { firstName, lastName, username, password, admin };
   const user = new User(userDetail);
   user.save((err) => {
     if (err) {
@@ -81,7 +81,26 @@ const createUsers = (cb) => {
     [
       (callback) => {
         bcrypt.hash('password123', 10, (err, hashedPassword) => {
-          userCreate('johnDoe01', hashedPassword, callback);
+          userCreate(
+            'John',
+            'Doe',
+            'johnDoe01',
+            hashedPassword,
+            true,
+            callback
+          );
+        });
+      },
+      (callback) => {
+        bcrypt.hash('password123', 10, (err, hashedPassword) => {
+          userCreate(
+            'Jane',
+            'Doe',
+            'janeDoe01',
+            hashedPassword,
+            false,
+            callback
+          );
         });
       },
     ],
