@@ -58,7 +58,7 @@ exports.index = [
 ];
 
 exports.create = [
-	beforeMiddlewares.jwtAuthenticated,
+	beforeMiddlewares.admin,
 	// Validate and sanitise fields.
 	body('title')
 		.trim()
@@ -140,7 +140,7 @@ exports.show = [
 ];
 
 exports.edit = [
-	beforeMiddlewares.jwtAuthenticated,
+	beforeMiddlewares.admin,
 	beforeMiddlewares.validMongooseObjectIdRouteParams(),
 	(req, res, next) => {
 		Post.findById(req.params.postId).exec((err, post) => {
@@ -161,7 +161,7 @@ exports.edit = [
 ];
 
 exports.update = [
-	beforeMiddlewares.jwtAuthenticated,
+	beforeMiddlewares.admin,
 	beforeMiddlewares.validMongooseObjectIdRouteParams(),
 	// Validate and sanitise fields.
 	body('title')
@@ -226,7 +226,7 @@ exports.update = [
 ];
 
 exports.destroy = [
-	beforeMiddlewares.jwtAuthenticated,
+	beforeMiddlewares.admin,
 	beforeMiddlewares.validMongooseObjectIdRouteParams(),
 	(req, res, next) => {
 		Post.findByIdAndDelete(req.params.postId, (err, post) => {
