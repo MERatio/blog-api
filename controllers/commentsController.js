@@ -136,7 +136,7 @@ exports.show = [
 					const err = new Error('Page not found');
 					err.status = 404;
 					next(err);
-				} else if (!req.user.admin && !comment.post.published) {
+				} else if (!(req.user && req.user.admin) && !comment.post.published) {
 					const err = new Error('Unauthorized');
 					err.status = 401;
 					next(err);
