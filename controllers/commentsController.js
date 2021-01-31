@@ -10,18 +10,19 @@ const Post = require('../models/post');
 exports.index = [
 	beforeMiddlewares.validMongooseObjectIdRouteParams(),
 	(req, res, next) => {
-		Post.findOne({
-			_id: req.params.postId,
-			/* Authenticated user can get published or unpublished post
-				 Unauthorize user can only see published post
-			*/
-			...(!req.user && { published: true }),
-		}).exec((err, post) => {
+		Post.findById(req.params.postId).exec((err, post) => {
 			if (err) {
 				next(err);
 			} else if (post === null) {
 				const err = new Error('Page not found');
 				err.status = 404;
+				next(err);
+			} else if (!(req.user && req.user.admin) && !post.published) {
+				/* Admin can get published or unpublished post
+					 Non-admin user can only see published post
+				*/
+				const err = new Error('Unauthorized');
+				err.status = 401;
 				next(err);
 			} else {
 				Comment.find({ post: req.params.postId }).exec((err, comments) => {
