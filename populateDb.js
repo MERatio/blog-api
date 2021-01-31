@@ -62,8 +62,8 @@ const postCreate = (author, title, body, published, cb) => {
   });
 };
 
-const commentCreate = (post, username, body, cb) => {
-  const commentDetail = { post, username, body };
+const commentCreate = (author, post, body, cb) => {
+  const commentDetail = { author, post, body };
   const comment = new Comment(commentDetail);
   comment.save((err) => {
     if (err) {
@@ -141,32 +141,32 @@ const createComments = (cb) => {
     [
       (callback) => {
         commentCreate(
+          users[0],
           posts[0],
-          'commenter1',
           'Comment on unpublished post (the post is published before when someone commented on it then became unpublished)',
           callback
         );
       },
       (callback) => {
         commentCreate(
+          users[1],
           posts[0],
-          'commenter2',
           'Comment on unpublished post (the post is published before when someone commented on it then became unpublished)',
           callback
         );
       },
       (callback) => {
         commentCreate(
+          users[0],
           posts[1],
-          'commenter3',
           'Comment on published post',
           callback
         );
       },
       (callback) => {
         commentCreate(
+          users[1],
           posts[1],
-          'commenter4',
           'Comment on published post',
           callback
         );
