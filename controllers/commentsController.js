@@ -8,9 +8,7 @@ const Comment = require('../models/comment');
 const Post = require('../models/post');
 
 exports.index = [
-	beforeMiddlewares.validMongooseObjectIdRouteParams({
-		postId: 'Post not found',
-	}),
+	beforeMiddlewares.validMongooseObjectIdRouteParams(),
 	(req, res, next) => {
 		Post.findOne({
 			_id: req.params.postId,
@@ -43,9 +41,7 @@ exports.index = [
 
 exports.new = [
 	beforeMiddlewares.jwtAuthenticated,
-	beforeMiddlewares.validMongooseObjectIdRouteParams({
-		postId: 'Post not found',
-	}),
+	beforeMiddlewares.validMongooseObjectIdRouteParams(),
 	(req, res, next) => {
 		// Post should be published before commenting.
 		Post.findOne({ _id: req.params.postId, published: true }).exec(
@@ -67,9 +63,7 @@ exports.new = [
 ];
 
 exports.create = [
-	beforeMiddlewares.validMongooseObjectIdRouteParams({
-		postId: 'Post not found',
-	}),
+	beforeMiddlewares.validMongooseObjectIdRouteParams(),
 	// If user is authenticated, use their username as comment.username.
 	(req, res, next) => {
 		if (req.user) {
@@ -143,10 +137,7 @@ exports.create = [
 ];
 
 exports.show = [
-	beforeMiddlewares.validMongooseObjectIdRouteParams({
-		postId: 'Post not found',
-		commentId: 'Comment not found',
-	}),
+	beforeMiddlewares.validMongooseObjectIdRouteParams(),
 	(req, res, next) => {
 		Post.findOne({
 			_id: req.params.postId,
