@@ -13,14 +13,14 @@ exports.index = [
 		async.waterfall(
 			[
 				(callback) => {
-					if (req.user) {
+					if (req.user && req.user.admin) {
 						Post.find(callback);
 					} else {
 						Post.find({ published: true }, callback);
 					}
 				},
 				(posts, callback) => {
-					if (req.user) {
+					if (req.user && req.user.admin) {
 						Comment.find().exec((err, comments) => {
 							if (err) {
 								callback(err, null, null);
