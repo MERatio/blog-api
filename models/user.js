@@ -21,6 +21,7 @@ UserSchema.virtual('forPublic').get(function () {
 	return {
 		_id: this.id,
 		username: this.username,
+		admin: this.admin,
 	};
 });
 
