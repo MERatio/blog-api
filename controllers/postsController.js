@@ -112,15 +112,16 @@ exports.create = [
 exports.show = [
 	beforeMiddlewares.validMongooseObjectIdRouteParams(),
 	(req, res, next) => {
-		Post.findOne({
-			_id: req.params.postId,
-			...(!req.user && { published: true }),
-		}).exec((err, post) => {
+		Post.findById(req.params.postId).exec((err, post) => {
 			if (err) {
 				next(err);
 			} else if (post === null) {
 				const err = new Error('Page not found');
 				err.status = 404;
+				next(err);
+			} else if (!(req.user && req.user.admin) && !post.published) {
+				const err = new Error('Unauthorized');
+				err.status = 401;
 				next(err);
 			} else {
 				Comment.find({ post: req.params.postId }).exec((err, comments) => {
