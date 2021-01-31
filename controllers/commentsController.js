@@ -159,7 +159,7 @@ exports.edit = [
 			.exec((err, comment) => {
 				if (err) {
 					next(err);
-				} else if (comment === null) {
+				} else if (comment === null || !comment.post.published) {
 					const err = new Error('Page not found');
 					err.status = 404;
 					next(err);
