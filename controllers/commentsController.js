@@ -20,7 +20,7 @@ exports.index = [
 			if (err) {
 				next(err);
 			} else if (post === null) {
-				const err = new Error('Post not found');
+				const err = new Error('Page not found');
 				err.status = 404;
 				next(err);
 			} else {
@@ -49,7 +49,7 @@ exports.new = [
 				if (err) {
 					next(err);
 				} else if (post === null) {
-					const err = new Error('Post not found');
+					const err = new Error('Page not found');
 					err.status = 404;
 					next(err);
 				} else {
@@ -78,7 +78,7 @@ exports.create = [
 				if (err) {
 					next(err);
 				} else if (post === null) {
-					const err = new Error('Post not found');
+					const err = new Error('Page not found');
 					err.status = 404;
 					next(err);
 				} else {
@@ -149,7 +149,7 @@ exports.show = [
 			if (err) {
 				next(err);
 			} else if (post === null) {
-				const err = new Error('Post not found');
+				const err = new Error('Page not found');
 				err.status = 404;
 				next(err);
 			} else {
@@ -160,7 +160,7 @@ exports.show = [
 					if (err) {
 						next(err);
 					} else if (comment === null) {
-						const err = new Error('Comment not found');
+						const err = new Error('Page not found');
 						err.status = 404;
 						next(err);
 					} else {
