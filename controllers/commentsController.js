@@ -63,14 +63,8 @@ exports.new = [
 ];
 
 exports.create = [
+	beforeMiddlewares.jwtAuthenticated,
 	beforeMiddlewares.validMongooseObjectIdRouteParams(),
-	// If user is authenticated, use their username as comment.username.
-	(req, res, next) => {
-		if (req.user) {
-			req.body.username = req.user.username;
-		}
-		next();
-	},
 	// Post should be published before commenting.
 	(req, res, next) => {
 		Post.findOne({ _id: req.params.postId, published: true }).exec(
@@ -88,13 +82,6 @@ exports.create = [
 		);
 	},
 	// Validate and sanitise fields.
-	body('username')
-		.trim()
-		.isLength({ min: 1 })
-		.withMessage('Username is required')
-		.isLength({ max: 20 })
-		.withMessage('Username is too long (maximum is 20 characters)')
-		.escape(),
 	body('body')
 		.trim()
 		.isLength({ min: 1 })
@@ -117,8 +104,8 @@ exports.create = [
 			// Data is valid.
 			// Create a Comment object with escaped and trimmed data.
 			const comment = new Comment({
+				author: req.user._id,
 				post: req.params.postId,
-				username: req.body.username,
 				body: req.body.body,
 			});
 			comment.save((err, comment) => {
