@@ -157,3 +157,26 @@ exports.show = [
 			});
 	},
 ];
+
+exports.edit = [
+	beforeMiddlewares.jwtAuthenticated,
+	beforeMiddlewares.validMongooseObjectIdRouteParams(),
+	(req, res, next) => {
+		Comment.findOne({ post: req.params.postId, _id: req.params.commentId })
+			.populate('post')
+			.exec((err, comment) => {
+				if (err) {
+					next(err);
+				} else if (comment === null) {
+					const err = new Error('Page not found');
+					err.status = 404;
+					next(err);
+				} else {
+					res.json({
+						user: req.user ? req.user.forPublic : false,
+						comment,
+					});
+				}
+			});
+	},
+];
