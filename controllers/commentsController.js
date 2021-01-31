@@ -131,9 +131,13 @@ exports.show = [
 			.exec((err, comment) => {
 				if (err) {
 					next(err);
-				} else if (comment === null || (!req.user && !comment.post.published)) {
+				} else if (comment === null) {
 					const err = new Error('Page not found');
 					err.status = 404;
+					next(err);
+				} else if (!req.user.admin && !comment.post.published) {
+					const err = new Error('Unauthorized');
+					err.status = 401;
 					next(err);
 				} else {
 					res.json({
