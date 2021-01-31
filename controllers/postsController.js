@@ -100,7 +100,7 @@ exports.create = [
 				} else {
 					// Successful
 					res.json({
-						user: req.user ? req.user.forPublic : false,
+						user: req.user.forPublic,
 						post,
 					});
 				}
@@ -156,7 +156,7 @@ exports.edit = [
 				next(err);
 			} else {
 				res.json({
-					user: req.user ? req.user.forPublic : false,
+					user: req.user.forPublic,
 					post,
 				});
 			}
@@ -194,7 +194,7 @@ exports.update = [
 		if (!errors.isEmpty()) {
 			// There are errors.
 			res.json({
-				user: req.user ? req.user.forPublic : false,
+				user: req.user.forPublic,
 				post: req.body,
 				errors: errors.array(),
 			});
@@ -222,7 +222,7 @@ exports.update = [
 					next(err);
 				} else {
 					res.json({
-						user: req.user ? req.user.forPublic : false,
+						user: req.user.forPublic,
 						post,
 					});
 				}
@@ -250,7 +250,7 @@ exports.destroy = [
 						next(err);
 					} else {
 						res.json({
-							user: req.user ? req.user.forPublic : false,
+							user: req.user.forPublic,
 							post,
 						});
 					}
