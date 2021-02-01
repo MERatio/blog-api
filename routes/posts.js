@@ -5,6 +5,8 @@ const postsController = require('../controllers/postsController');
 
 router.get('/', postsController.index);
 
+router.get('/new', postsController.new);
+
 router.post('/', postsController.create);
 
 router.get('/:postId', postsController.show);
