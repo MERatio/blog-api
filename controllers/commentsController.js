@@ -159,11 +159,17 @@ exports.edit = [
 			.exec((err, comment) => {
 				if (err) {
 					next(err);
-				} else if (comment === null || !comment.post.published) {
+				} else if (comment === null) {
 					const err = new Error('Page not found');
 					err.status = 404;
 					next(err);
-				} else if (String(comment.author) !== String(req.user._id)) {
+				} else if (
+					String(comment.author) !== String(req.user._id) ||
+					(!comment.post.published && !req.user.admin)
+				) {
+					/* If user doesn't own the post or
+						 if post is unpublished and user is not an admin
+					*/
 					const err = new Error('Unauthorized');
 					err.status = 401;
 					next(err);
