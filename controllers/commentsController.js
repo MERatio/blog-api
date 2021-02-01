@@ -8,7 +8,7 @@ const Comment = require('../models/comment');
 const Post = require('../models/post');
 
 exports.index = [
-	beforeMiddlewares.validMongooseObjectIdRouteParams(),
+	beforeMiddlewares.validMongooseObjectIdRouteParams,
 	(req, res, next) => {
 		Post.findById(req.params.postId).exec((err, post) => {
 			if (err) {
@@ -42,7 +42,7 @@ exports.index = [
 
 exports.new = [
 	beforeMiddlewares.jwtAuthenticated,
-	beforeMiddlewares.validMongooseObjectIdRouteParams(),
+	beforeMiddlewares.validMongooseObjectIdRouteParams,
 	beforeMiddlewares.publishedPost,
 	(req, res, next) => {
 		res.json({
@@ -53,7 +53,7 @@ exports.new = [
 
 exports.create = [
 	beforeMiddlewares.jwtAuthenticated,
-	beforeMiddlewares.validMongooseObjectIdRouteParams(),
+	beforeMiddlewares.validMongooseObjectIdRouteParams,
 	beforeMiddlewares.publishedPost,
 	// Validate and sanitise fields.
 	body('body')
@@ -98,7 +98,7 @@ exports.create = [
 ];
 
 exports.show = [
-	beforeMiddlewares.validMongooseObjectIdRouteParams(),
+	beforeMiddlewares.validMongooseObjectIdRouteParams,
 	(req, res, next) => {
 		Comment.findOne({ post: req.params.postId, _id: req.params.commentId })
 			.populate('post')
@@ -125,7 +125,7 @@ exports.show = [
 
 exports.edit = [
 	beforeMiddlewares.jwtAuthenticated,
-	beforeMiddlewares.validMongooseObjectIdRouteParams(),
+	beforeMiddlewares.validMongooseObjectIdRouteParams,
 	(req, res, next) => {
 		Comment.findOne({ post: req.params.postId, _id: req.params.commentId })
 			.populate('post')

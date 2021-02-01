@@ -119,7 +119,7 @@ exports.create = [
 ];
 
 exports.show = [
-	beforeMiddlewares.validMongooseObjectIdRouteParams(),
+	beforeMiddlewares.validMongooseObjectIdRouteParams,
 	(req, res, next) => {
 		Post.findById(req.params.postId).exec((err, post) => {
 			if (err) {
@@ -151,7 +151,7 @@ exports.show = [
 
 exports.edit = [
 	beforeMiddlewares.admin,
-	beforeMiddlewares.validMongooseObjectIdRouteParams(),
+	beforeMiddlewares.validMongooseObjectIdRouteParams,
 	(req, res, next) => {
 		Post.findById(req.params.postId).exec((err, post) => {
 			if (err) {
@@ -172,7 +172,7 @@ exports.edit = [
 
 exports.update = [
 	beforeMiddlewares.admin,
-	beforeMiddlewares.validMongooseObjectIdRouteParams(),
+	beforeMiddlewares.validMongooseObjectIdRouteParams,
 	// Validate and sanitise fields.
 	body('title')
 		.trim()
@@ -236,7 +236,7 @@ exports.update = [
 
 exports.destroy = [
 	beforeMiddlewares.admin,
-	beforeMiddlewares.validMongooseObjectIdRouteParams(),
+	beforeMiddlewares.validMongooseObjectIdRouteParams,
 	(req, res, next) => {
 		Post.findByIdAndDelete(req.params.postId, (err, post) => {
 			if (err) {
