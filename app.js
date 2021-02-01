@@ -8,6 +8,7 @@ const passportConfig = require('./config/passportConfig');
 
 // Lib
 const beforeMiddlewares = require('./lib/beforeMiddlewares');
+const middlewares = require('./lib/middlewares');
 
 // Require routers
 const authRouter = require('./routes/auth');
@@ -25,7 +26,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(passportConfig.initialize());
 
-app.use(beforeMiddlewares.setUserUsingJwtAuth);
+app.use(middlewares.setUserUsingJwtAuth);
 
 // Use the routers
 app.use('/auth', authRouter);
