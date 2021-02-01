@@ -20,6 +20,8 @@ const UserSchema = new Schema({
 UserSchema.virtual('forPublic').get(function () {
 	return {
 		_id: this.id,
+		firstName: this.firstName,
+		lastName: this.lastName,
 		username: this.username,
 		admin: this.admin,
 	};
