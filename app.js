@@ -11,6 +11,7 @@ const beforeMiddlewares = require('./lib/beforeMiddlewares');
 const middlewares = require('./lib/middlewares');
 
 // Require routers
+const adminRouter = require('./routes/admins');
 const authRouter = require('./routes/auth');
 const usersRouter = require('./routes/users');
 const postsRouter = require('./routes/posts');
@@ -29,6 +30,7 @@ app.use(passportConfig.initialize());
 app.use(middlewares.setUserUsingJwtAuth);
 
 // Use the routers
+app.use('/admins', adminRouter);
 app.use('/auth', authRouter);
 app.use('/users', usersRouter);
 app.use('/posts', postsRouter);
