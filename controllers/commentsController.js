@@ -43,45 +43,18 @@ exports.index = [
 exports.new = [
 	beforeMiddlewares.jwtAuthenticated,
 	beforeMiddlewares.validMongooseObjectIdRouteParams(),
+	beforeMiddlewares.publishedPost,
 	(req, res, next) => {
-		// Post should be published before commenting.
-		Post.findOne({ _id: req.params.postId, published: true }).exec(
-			(err, post) => {
-				if (err) {
-					next(err);
-				} else if (post === null) {
-					const err = new Error('Page not found');
-					err.status = 404;
-					next(err);
-				} else {
-					res.json({
-						user: req.user.forPublic,
-					});
-				}
-			}
-		);
+		res.json({
+			user: req.user.forPublic,
+		});
 	},
 ];
 
 exports.create = [
 	beforeMiddlewares.jwtAuthenticated,
 	beforeMiddlewares.validMongooseObjectIdRouteParams(),
-	// Post should be published before commenting.
-	(req, res, next) => {
-		Post.findOne({ _id: req.params.postId, published: true }).exec(
-			(err, post) => {
-				if (err) {
-					next(err);
-				} else if (post === null) {
-					const err = new Error('Page not found');
-					err.status = 404;
-					next(err);
-				} else {
-					next();
-				}
-			}
-		);
-	},
+	beforeMiddlewares.publishedPost,
 	// Validate and sanitise fields.
 	body('body')
 		.trim()
