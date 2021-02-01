@@ -207,17 +207,17 @@ exports.update = [
 			Post.findByIdAndUpdate(req.params.postId, post, {
 				new: true,
 				runValidators: true,
-			}).exec((err, post) => {
+			}).exec((err, updatedPost) => {
 				if (err) {
 					next(err);
-				} else if (post === null) {
+				} else if (updatedPost === null) {
 					const err = new Error('Page not found');
 					err.status = 404;
 					next(err);
 				} else {
 					res.json({
 						user: req.user.forPublic,
-						post,
+						post: updatedPost,
 					});
 				}
 			});
