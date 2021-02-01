@@ -7,7 +7,6 @@ const logger = require('morgan');
 const passportConfig = require('./config/passportConfig');
 
 // Lib
-const beforeMiddlewares = require('./lib/beforeMiddlewares');
 const middlewares = require('./lib/middlewares');
 
 // Require routers
