@@ -205,7 +205,6 @@ exports.update = [
 			});
 			// Update the record.
 			Post.findByIdAndUpdate(req.params.postId, post, {
-				user: req.user ? req.user.forPublic : false,
 				new: true,
 				runValidators: true,
 			}).exec((err, post) => {
