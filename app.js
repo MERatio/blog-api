@@ -7,6 +7,7 @@ const logger = require('morgan');
 const passportConfig = require('./config/passportConfig');
 
 // Lib
+const beforeMiddlewares = require('./lib/beforeMiddlewares');
 const middlewares = require('./lib/middlewares');
 
 // Require routers
@@ -29,7 +30,12 @@ app.use(passportConfig.initialize());
 app.use(middlewares.setUserUsingJwtAuth);
 
 // Use the routers
-app.use('/admins', adminRouter);
+app.use(
+	'/admins',
+	beforeMiddlewares.jwtAuthenticated,
+	beforeMiddlewares.nonAdmin,
+	adminRouter
+);
 app.use('/auth', authRouter);
 app.use('/users', usersRouter);
 app.use('/posts', postsRouter);

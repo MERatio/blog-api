@@ -6,17 +6,11 @@ const beforeMiddlewares = require('../lib/beforeMiddlewares');
 // Model
 const User = require('../models/user');
 
-exports.new = [
-	beforeMiddlewares.jwtAuthenticated,
-	beforeMiddlewares.nonAdmin,
-	(req, res, next) => {
-		res.json({ user: req.user.forPublic });
-	},
-];
+exports.new = (req, res, next) => {
+	res.json({ user: req.user.forPublic });
+};
 
 exports.create = [
-	beforeMiddlewares.jwtAuthenticated,
-	beforeMiddlewares.nonAdmin,
 	body('adminPasscode').custom((adminPasscode) => {
 		if (adminPasscode !== process.env.ADMIN_PASSCODE) {
 			throw new Error('Admin passcode is incorrect');
