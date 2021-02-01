@@ -37,7 +37,7 @@ app.use(
 	adminRouter
 );
 app.use('/auth', authRouter);
-app.use('/users', usersRouter);
+app.use('/users', beforeMiddlewares.jwtUnauthenticated, usersRouter);
 app.use('/posts', postsRouter);
 app.use('/posts/:postId/comments', commentsRouter);
 
