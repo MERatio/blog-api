@@ -57,6 +57,15 @@ exports.index = [
 	},
 ];
 
+exports.new = [
+	beforeMiddlewares.admin,
+	(req, res, next) => {
+		res.json({
+			user: req.user.forPublic,
+		});
+	},
+];
+
 exports.create = [
 	beforeMiddlewares.admin,
 	// Validate and sanitise fields.
