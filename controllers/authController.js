@@ -15,9 +15,9 @@ exports.signIn = (req, res, next) => {
 					res.send(err);
 				} else {
 					/* 
-						Matching username and password.
-						Generate a signed json web token with the contents of user object 
-					  and return it in the response.
+						Username and password matched.
+						Generate a signed json web token 
+						with object containing the user id as its payload
 					*/
 					const jwtPayload = { userId: user._id };
 					const token = jwt.sign(jwtPayload, process.env.JWT_SECRET, {
