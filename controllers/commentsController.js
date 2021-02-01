@@ -163,7 +163,7 @@ exports.edit = [
 					const err = new Error('Page not found');
 					err.status = 404;
 					next(err);
-				} else if (comment.author._id !== req.user._id) {
+				} else if (String(comment.author) !== String(req.user._id)) {
 					const err = new Error('Unauthorized');
 					err.status = 401;
 					next(err);
