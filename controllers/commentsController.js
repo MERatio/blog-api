@@ -126,32 +126,11 @@ exports.show = [
 exports.edit = [
 	beforeMiddlewares.jwtAuthenticated,
 	beforeMiddlewares.validMongooseObjectIdRouteParams,
+	beforeMiddlewares.authorizedToUpdateComment,
 	(req, res, next) => {
-		Comment.findOne({ post: req.params.postId, _id: req.params.commentId })
-			.populate('post')
-			.exec((err, comment) => {
-				if (err) {
-					next(err);
-				} else if (comment === null) {
-					const err = new Error('Page not found');
-					err.status = 404;
-					next(err);
-				} else if (
-					String(comment.author) !== String(req.user._id) ||
-					(!comment.post.published && !req.user.admin)
-				) {
-					/* If user doesn't own the post or
-						 if post is unpublished and user is not an admin
-					*/
-					const err = new Error('Unauthorized');
-					err.status = 401;
-					next(err);
-				} else {
-					res.json({
-						user: req.user ? req.user.forPublic : false,
-						comment,
-					});
-				}
-			});
+		res.json({
+			user: req.user ? req.user.forPublic : false,
+			comment: req.comment,
+		});
 	},
 ];
