@@ -13,4 +13,6 @@ router.get('/:commentId', commentsController.show);
 
 router.get('/:commentId/edit', commentsController.edit);
 
+router.put('/:commentId', commentsController.update);
+
 module.exports = router;
