@@ -33,11 +33,11 @@ exports.create = [
 				req.user._id,
 				{ admin: true },
 				{ new: true, runValidators: true }
-			).exec((err, user) => {
+			).exec((err, updatedUser) => {
 				if (err) {
 					next(err);
 				} else {
-					res.json({ user: user.forPublic });
+					res.json({ user: updatedUser.forPublic });
 				}
 			});
 		}
