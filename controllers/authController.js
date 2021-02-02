@@ -4,6 +4,13 @@ const jwt = require('jsonwebtoken');
 // Lib
 const beforeMiddlewares = require('../lib/beforeMiddlewares');
 
+exports.new = [
+	beforeMiddlewares.jwtUnauthenticated,
+	(req, res, next) => {
+		res.json({ user: false });
+	},
+];
+
 exports.create = [
 	beforeMiddlewares.jwtUnauthenticated,
 	(req, res, next) => {
