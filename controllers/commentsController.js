@@ -184,3 +184,41 @@ exports.update = [
 		}
 	},
 ];
+
+exports.destroy = [
+	beforeMiddlewares.jwtAuthenticated,
+	beforeMiddlewares.validMongooseObjectIdRouteParams,
+	(req, res, next) => {
+		Comment.findOne({
+			post: req.params.postId,
+			_id: req.params.commentId,
+		}).exec((err, comment) => {
+			if (err) {
+				next(err);
+			} else if (comment === null) {
+				const err = new Error('Page not found');
+				err.status = 404;
+				next(err);
+			} else if (
+				String(comment.author) !== String(req.user._id) &&
+				!req.user.admin
+			) {
+				/* If user doesn't own the comment and not an admin.
+					 Admin can delete any comment.
+				*/
+				const err = new Error('Unauthorized');
+				err.status = 401;
+				next(err);
+			} else {
+				Comment.findByIdAndDelete(req.params.commentId).exec(
+					(err, deletedComment) => {
+						res.json({
+							user: req.user.forPublic,
+							comment: deletedComment,
+						});
+					}
+				);
+			}
+		});
+	},
+];
