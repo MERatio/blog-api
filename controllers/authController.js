@@ -1,7 +1,7 @@
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
 
-exports.signIn = (req, res, next) => {
+exports.create = (req, res, next) => {
 	passport.authenticate('local', { session: false }, (err, user, info) => {
 		if (err) {
 			next(err);
