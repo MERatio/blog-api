@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const logger = require('morgan');
+const compression = require('compression');
 
 // Config
 const passportConfig = require('./config/passportConfig');
@@ -25,6 +26,7 @@ require('./config/db');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(compression()); // Compress all routes
 app.use(passportConfig.initialize());
 
 app.use(middlewares.setUserUsingJwtAuth);
