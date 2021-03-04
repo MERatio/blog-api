@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const logger = require('morgan');
 const compression = require('compression');
+const helmet = require('helmet');
 
 // Config
 const passportConfig = require('./config/passportConfig');
@@ -19,6 +20,8 @@ const postsRouter = require('./routes/posts');
 const commentsRouter = require('./routes/comments');
 
 const app = express();
+
+app.use(helmet());
 
 // Set up default mongoose connection
 require('./config/db');
