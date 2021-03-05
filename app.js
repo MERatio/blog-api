@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const logger = require('morgan');
 const compression = require('compression');
+const cors = require('cors');
 const helmet = require('helmet');
 
 // Config
@@ -20,6 +21,8 @@ const postsRouter = require('./routes/posts');
 const commentsRouter = require('./routes/comments');
 
 const app = express();
+
+app.use(cors());
 
 app.use(helmet());
 
