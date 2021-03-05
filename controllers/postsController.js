@@ -8,8 +8,9 @@ const Post = require('../models/post');
 const Comment = require('../models/comment');
 
 exports.index = (req, res, next) => {
-	Post.find(req.user && req.user.admin ? {} : { published: true }).exec(
-		(err, posts) => {
+	Post.find(req.user && req.user.admin ? {} : { published: true })
+		.populate('author', 'firstName lastName username admin')
+		.exec((err, posts) => {
 			if (err) {
 				next(err);
 			} else {
@@ -18,8 +19,7 @@ exports.index = (req, res, next) => {
 					posts,
 				});
 			}
-		}
-	);
+		});
 };
 
 exports.new = [
@@ -86,24 +86,26 @@ exports.create = [
 exports.show = [
 	beforeMiddlewares.validMongooseObjectIdRouteParams,
 	(req, res, next) => {
-		Post.findById(req.params.postId).exec((err, post) => {
-			if (err) {
-				next(err);
-			} else if (post === null) {
-				const err = new Error('Page not found');
-				err.status = 404;
-				next(err);
-			} else if (!(req.user && req.user.admin) && !post.published) {
-				const err = new Error('Unauthorized');
-				err.status = 401;
-				next(err);
-			} else {
-				res.json({
-					user: req.user ? req.user.forPublic : false,
-					post,
-				});
-			}
-		});
+		Post.findById(req.params.postId)
+			.populate('author', 'firstName lastName username admin')
+			.exec((err, post) => {
+				if (err) {
+					next(err);
+				} else if (post === null) {
+					const err = new Error('Page not found');
+					err.status = 404;
+					next(err);
+				} else if (!(req.user && req.user.admin) && !post.published) {
+					const err = new Error('Unauthorized');
+					err.status = 401;
+					next(err);
+				} else {
+					res.json({
+						user: req.user ? req.user.forPublic : false,
+						post,
+					});
+				}
+			});
 	},
 ];
 
@@ -111,20 +113,22 @@ exports.edit = [
 	beforeMiddlewares.admin,
 	beforeMiddlewares.validMongooseObjectIdRouteParams,
 	(req, res, next) => {
-		Post.findById(req.params.postId).exec((err, post) => {
-			if (err) {
-				next(err);
-			} else if (post === null) {
-				const err = new Error('Page not found');
-				err.status = 404;
-				next(err);
-			} else {
-				res.json({
-					user: req.user.forPublic,
-					post,
-				});
-			}
-		});
+		Post.findById(req.params.postId)
+			.populate('author', 'firstName lastName username admin')
+			.exec((err, post) => {
+				if (err) {
+					next(err);
+				} else if (post === null) {
+					const err = new Error('Page not found');
+					err.status = 404;
+					next(err);
+				} else {
+					res.json({
+						user: req.user.forPublic,
+						post,
+					});
+				}
+			});
 	},
 ];
 
@@ -174,20 +178,22 @@ exports.update = [
 			Post.findByIdAndUpdate(req.params.postId, post, {
 				new: true,
 				runValidators: true,
-			}).exec((err, updatedPost) => {
-				if (err) {
-					next(err);
-				} else if (updatedPost === null) {
-					const err = new Error('Page not found');
-					err.status = 404;
-					next(err);
-				} else {
-					res.json({
-						user: req.user.forPublic,
-						post: updatedPost,
-					});
-				}
-			});
+			})
+				.populate('author', 'firstName lastName username admin')
+				.exec((err, updatedPost) => {
+					if (err) {
+						next(err);
+					} else if (updatedPost === null) {
+						const err = new Error('Page not found');
+						err.status = 404;
+						next(err);
+					} else {
+						res.json({
+							user: req.user.forPublic,
+							post: updatedPost,
+						});
+					}
+				});
 		}
 	},
 ];
@@ -196,25 +202,27 @@ exports.destroy = [
 	beforeMiddlewares.admin,
 	beforeMiddlewares.validMongooseObjectIdRouteParams,
 	(req, res, next) => {
-		Post.findByIdAndDelete(req.params.postId, (err, post) => {
-			if (err) {
-				next(err);
-			} else if (post === null) {
-				const err = new Error('Page not found');
-				err.status = 404;
-				next(err);
-			} else {
-				Comment.deleteMany({ post: post._id }, (err) => {
-					if (err) {
-						next(err);
-					} else {
-						res.json({
-							user: req.user.forPublic,
-							post,
-						});
-					}
-				});
-			}
-		});
+		Post.findByIdAndDelete(req.params.postId)
+			.populate('author', 'firstName lastName username admin')
+			.exec((err, post) => {
+				if (err) {
+					next(err);
+				} else if (post === null) {
+					const err = new Error('Page not found');
+					err.status = 404;
+					next(err);
+				} else {
+					Comment.deleteMany({ post: post._id }, (err) => {
+						if (err) {
+							next(err);
+						} else {
+							res.json({
+								user: req.user.forPublic,
+								post,
+							});
+						}
+					});
+				}
+			});
 	},
 ];
