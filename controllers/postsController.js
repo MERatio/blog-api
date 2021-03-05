@@ -98,16 +98,9 @@ exports.show = [
 				err.status = 401;
 				next(err);
 			} else {
-				Comment.find({ post: req.params.postId }).exec((err, comments) => {
-					if (err) {
-						next(err);
-					} else {
-						res.json({
-							user: req.user ? req.user.forPublic : false,
-							post,
-							comments,
-						});
-					}
+				res.json({
+					user: req.user ? req.user.forPublic : false,
+					post,
 				});
 			}
 		});
