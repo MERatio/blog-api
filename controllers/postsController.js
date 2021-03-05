@@ -1,5 +1,4 @@
 const { body, validationResult } = require('express-validator');
-const async = require('async');
 
 // Lib
 const beforeMiddlewares = require('../lib/beforeMiddlewares');
@@ -8,54 +7,20 @@ const beforeMiddlewares = require('../lib/beforeMiddlewares');
 const Post = require('../models/post');
 const Comment = require('../models/comment');
 
-exports.index = [
-	(req, res, next) => {
-		async.waterfall(
-			[
-				(callback) => {
-					if (req.user && req.user.admin) {
-						Post.find(callback);
-					} else {
-						Post.find({ published: true }, callback);
-					}
-				},
-				(posts, callback) => {
-					if (req.user && req.user.admin) {
-						Comment.find().exec((err, comments) => {
-							if (err) {
-								callback(err, null, null);
-							} else {
-								callback(null, { posts, comments });
-							}
-						});
-					} else {
-						const publishedPostsIds = posts.map(({ _id }) => _id);
-						Comment.find({ post: { $in: publishedPostsIds } }).exec(
-							(err, comments) => {
-								if (err) {
-									callback(err, null, null);
-								} else {
-									callback(null, { posts, comments });
-								}
-							}
-						);
-					}
-				},
-			],
-			(err, results) => {
-				if (err) {
-					next(err);
-				} else {
-					res.json({
-						user: req.user ? req.user.forPublic : false,
-						posts: results.posts,
-						comments: results.comments,
-					});
-				}
+exports.index = (req, res, next) => {
+	Post.find(req.user && req.user.admin ? {} : { published: true }).exec(
+		(err, posts) => {
+			if (err) {
+				next(err);
+			} else {
+				res.json({
+					user: req.user ? req.user.forPublic : false,
+					posts,
+				});
 			}
-		);
-	},
-];
+		}
+	);
+};
 
 exports.new = [
 	beforeMiddlewares.admin,
