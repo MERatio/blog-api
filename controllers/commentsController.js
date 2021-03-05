@@ -26,6 +26,7 @@ exports.index = [
 				next(err);
 			} else {
 				Comment.find({ post: req.params.postId })
+					.populate('author', 'firstName lastName username admin')
 					.populate('post')
 					.exec((err, comments) => {
 						if (err) {
@@ -103,6 +104,7 @@ exports.show = [
 	beforeMiddlewares.validMongooseObjectIdRouteParams,
 	(req, res, next) => {
 		Comment.findOne({ post: req.params.postId, _id: req.params.commentId })
+			.populate('author', 'firstName lastName username admin')
 			.populate('post')
 			.exec((err, comment) => {
 				if (err) {
@@ -213,6 +215,7 @@ exports.destroy = [
 				next(err);
 			} else {
 				Comment.findByIdAndDelete(req.params.commentId)
+					.populate('author', 'firstName lastName username admin')
 					.populate('post')
 					.exec((err, deletedComment) => {
 						res.json({
