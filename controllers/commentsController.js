@@ -25,16 +25,18 @@ exports.index = [
 				err.status = 401;
 				next(err);
 			} else {
-				Comment.find({ post: req.params.postId }).exec((err, comments) => {
-					if (err) {
-						next(err);
-					} else {
-						res.json({
-							user: req.user ? req.user.forPublic : false,
-							comments,
-						});
-					}
-				});
+				Comment.find({ post: req.params.postId })
+					.populate('post')
+					.exec((err, comments) => {
+						if (err) {
+							next(err);
+						} else {
+							res.json({
+								user: req.user ? req.user.forPublic : false,
+								comments,
+							});
+						}
+					});
 			}
 		});
 	},
@@ -210,14 +212,14 @@ exports.destroy = [
 				err.status = 401;
 				next(err);
 			} else {
-				Comment.findByIdAndDelete(req.params.commentId).exec(
-					(err, deletedComment) => {
+				Comment.findByIdAndDelete(req.params.commentId)
+					.populate('post')
+					.exec((err, deletedComment) => {
 						res.json({
 							user: req.user.forPublic,
 							comment: deletedComment,
 						});
-					}
-				);
+					});
 			}
 		});
 	},
