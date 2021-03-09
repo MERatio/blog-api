@@ -24,7 +24,7 @@ exports.create = [
 			} else {
 				req.login(user, { session: false }, (err) => {
 					if (err) {
-						res.send(err);
+						next(err);
 					} else {
 						/* 
 						Username and password matched.
