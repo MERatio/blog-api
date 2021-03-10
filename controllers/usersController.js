@@ -7,13 +7,17 @@ const beforeMiddlewares = require('../lib/beforeMiddlewares');
 // Model
 const User = require('../models/user');
 
-exports.new = (req, res, next) => {
-	res.json({
-		user: false,
-	});
-};
+exports.new = [
+	beforeMiddlewares.jwtUnauthenticated,
+	(req, res, next) => {
+		res.json({
+			user: false,
+		});
+	},
+];
 
 exports.create = [
+	beforeMiddlewares.jwtUnauthenticated,
 	// Validate and sanitise fields.
 	body('firstName')
 		.trim()
@@ -94,3 +98,7 @@ exports.create = [
 		}
 	},
 ];
+
+exports.getCurrentUser = (req, res, next) => {
+	res.json({ user: req.user ? req.user.forPublic : false });
+};
