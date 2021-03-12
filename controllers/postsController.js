@@ -9,6 +9,7 @@ const Comment = require('../models/comment');
 
 exports.index = (req, res, next) => {
 	Post.find(req.user && req.user.admin ? {} : { published: true })
+		.sort('-createdAt')
 		.populate('author', 'firstName lastName username admin')
 		.exec((err, posts) => {
 			if (err) {
