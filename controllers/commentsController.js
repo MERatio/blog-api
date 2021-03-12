@@ -26,6 +26,7 @@ exports.index = [
 				next(err);
 			} else {
 				Comment.find({ post: req.params.postId })
+					.sort('-createdAt')
 					.populate('author', 'firstName lastName username admin')
 					.populate('post')
 					.exec((err, comments) => {
