@@ -22,7 +22,7 @@ const commentsRouter = require('./routes/comments');
 
 const app = express();
 
-const allowedOrigins = ['http://localhost:3000'];
+const allowedOrigins = ['http://localhost:3000', 'https://meratio.github.io'];
 app.use(
 	cors({
 		origin(origin, callback) {
