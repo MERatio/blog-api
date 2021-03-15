@@ -60,6 +60,17 @@ exports.create = [
 			return true;
 		}
 	}),
+	body('adminPasscode').custom((adminPasscode, { req }) => {
+		if (req.body.isAdminPasscodeRequired === true) {
+			if (adminPasscode !== process.env.ADMIN_PASSCODE) {
+				throw new Error('Admin passcode is incorrect');
+			} else {
+				return true;
+			}
+		} else {
+			return true;
+		}
+	}),
 	// Process request after validation and sanitization.
 	(req, res, next) => {
 		// Extract the validation errors from a request.
@@ -83,7 +94,10 @@ exports.create = [
 						lastName: req.body.lastName,
 						username: req.body.username,
 						password: hashedPassword,
-						admin: false,
+						admin:
+							req.body.isAdminPasscodeRequired === true
+								? req.body.adminPasscode === process.env.ADMIN_PASSCODE
+								: false,
 					});
 					user.save((err) => {
 						if (err) {
