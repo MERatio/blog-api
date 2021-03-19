@@ -49,6 +49,11 @@ exports.create = [
 		.isLength({ max: 1000 })
 		.withMessage('Body is too long (maximum is 1000 characters)')
 		.escape(),
+	body('published')
+		.notEmpty()
+		.withMessage('Published is required')
+		.isIn([true, false])
+		.withMessage('Published should be a boolean'),
 	// Process request after validation and sanitization.
 	(req, res, next) => {
 		// Extract the validation errors from a request.
@@ -67,7 +72,7 @@ exports.create = [
 				author: req.user._id,
 				title: req.body.title,
 				body: req.body.body,
-				published: false,
+				published: req.body.published,
 			});
 			post.save((err, post) => {
 				if (err) {
