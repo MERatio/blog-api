@@ -37,6 +37,8 @@ exports.create = [
 		.trim()
 		.isLength({ min: 1 })
 		.withMessage('Enter your username')
+		.matches(/^[a-z0-9-_]+$/i)
+		.withMessage('Username can only contain letters, numbers, - and _')
 		.isLength({ max: 20 })
 		.withMessage('Username is too long (maximum is 20 characters)')
 		.escape()
