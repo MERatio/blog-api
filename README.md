@@ -2,11 +2,19 @@
 
 For more information about this project visit [The Odin Project](https://www.theodinproject.com/lessons/blog-api).
 
+## Features
+
+- User and admin registation
+- User and admin authentication
+- CRUD posts
+- CRUD post comments
+- Publish and unpulish posts
+
 ## .env
 
-DEV_DB_STRING
-JWT_SECRET
-ADMIN_PASSCODE=adminPasscode123
+- DEV_DB_STRING
+- JWT_SECRET
+- ADMIN_PASSCODE=adminPasscode123
 
 ## Built With
 
