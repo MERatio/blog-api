@@ -10,13 +10,13 @@ const Comment = require('../models/comment');
 exports.index = (req, res, next) => {
 	Post.find(req.user && req.user.admin ? {} : { published: true })
 		.sort('-createdAt')
-		.populate('author', 'firstName lastName username admin')
+		.populate('author')
 		.exec((err, posts) => {
 			if (err) {
 				next(err);
 			} else {
 				res.json({
-					user: req.user ? req.user.forPublic : false,
+					user: req.user ? req.user : false,
 					posts,
 				});
 			}
@@ -27,7 +27,7 @@ exports.new = [
 	beforeMiddlewares.admin,
 	(req, res, next) => {
 		res.json({
-			user: req.user.forPublic,
+			user: req.user,
 		});
 	},
 ];
@@ -61,7 +61,7 @@ exports.create = [
 		if (!errors.isEmpty()) {
 			// There are errors.
 			res.json({
-				user: req.user ? req.user.forPublic : false,
+				user: req.user ? req.user : false,
 				post: req.body,
 				errors: errors.array(),
 			});
@@ -80,7 +80,7 @@ exports.create = [
 				} else {
 					// Successful
 					res.json({
-						user: req.user.forPublic,
+						user: req.user,
 						post,
 					});
 				}
@@ -93,7 +93,7 @@ exports.show = [
 	beforeMiddlewares.validMongooseObjectIdRouteParams,
 	(req, res, next) => {
 		Post.findById(req.params.postId)
-			.populate('author', 'firstName lastName username admin')
+			.populate('author')
 			.exec((err, post) => {
 				if (err) {
 					next(err);
@@ -107,7 +107,7 @@ exports.show = [
 					next(err);
 				} else {
 					res.json({
-						user: req.user ? req.user.forPublic : false,
+						user: req.user ? req.user : false,
 						post,
 					});
 				}
@@ -120,7 +120,7 @@ exports.edit = [
 	beforeMiddlewares.validMongooseObjectIdRouteParams,
 	(req, res, next) => {
 		Post.findById(req.params.postId)
-			.populate('author', 'firstName lastName username admin')
+			.populate('author')
 			.exec((err, post) => {
 				if (err) {
 					next(err);
@@ -130,7 +130,7 @@ exports.edit = [
 					next(err);
 				} else {
 					res.json({
-						user: req.user.forPublic,
+						user: req.user,
 						post,
 					});
 				}
@@ -166,7 +166,7 @@ exports.update = [
 		if (!errors.isEmpty()) {
 			// There are errors.
 			res.json({
-				user: req.user.forPublic,
+				user: req.user,
 				post: req.body,
 				errors: errors.array(),
 			});
@@ -185,7 +185,7 @@ exports.update = [
 				new: true,
 				runValidators: true,
 			})
-				.populate('author', 'firstName lastName username admin')
+				.populate('author')
 				.exec((err, updatedPost) => {
 					if (err) {
 						next(err);
@@ -195,7 +195,7 @@ exports.update = [
 						next(err);
 					} else {
 						res.json({
-							user: req.user.forPublic,
+							user: req.user,
 							post: updatedPost,
 						});
 					}
@@ -209,7 +209,7 @@ exports.destroy = [
 	beforeMiddlewares.validMongooseObjectIdRouteParams,
 	(req, res, next) => {
 		Post.findByIdAndDelete(req.params.postId)
-			.populate('author', 'firstName lastName username admin')
+			.populate('author')
 			.exec((err, post) => {
 				if (err) {
 					next(err);
@@ -223,7 +223,7 @@ exports.destroy = [
 							next(err);
 						} else {
 							res.json({
-								user: req.user.forPublic,
+								user: req.user,
 								post,
 							});
 						}

@@ -16,15 +16,11 @@ const UserSchema = new Schema({
 	admin: { type: Boolean, required: true, default: false },
 });
 
-// Virtuals
-UserSchema.virtual('forPublic').get(function () {
-	return {
-		_id: this.id,
-		firstName: this.firstName,
-		lastName: this.lastName,
-		username: this.username,
-		admin: this.admin,
-	};
+UserSchema.set('toJSON', {
+	transform(doc, ret, options) {
+		const { password, ...retJson } = ret;
+		return retJson;
+	},
 });
 
 module.exports = mongoose.model('User', UserSchema);

@@ -106,7 +106,7 @@ exports.create = [
 							next(err);
 						} else {
 							// Successful
-							res.json({ user: user.forPublic });
+							res.json({ user: user });
 						}
 					});
 				}
@@ -116,5 +116,5 @@ exports.create = [
 ];
 
 exports.getCurrentUser = (req, res, next) => {
-	res.json({ user: req.user ? req.user.forPublic : false });
+	res.json({ user: req.user ? req.user : false });
 };

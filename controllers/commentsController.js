@@ -27,14 +27,13 @@ exports.index = [
 			} else {
 				Comment.find({ post: req.params.postId })
 					.sort('-createdAt')
-					.populate('author', 'firstName lastName username admin')
-					.populate('post')
+					.populate('author post')
 					.exec((err, comments) => {
 						if (err) {
 							next(err);
 						} else {
 							res.json({
-								user: req.user ? req.user.forPublic : false,
+								user: req.user ? req.user : false,
 								comments,
 							});
 						}
@@ -50,7 +49,7 @@ exports.new = [
 	beforeMiddlewares.publishedPost,
 	(req, res, next) => {
 		res.json({
-			user: req.user.forPublic,
+			user: req.user,
 		});
 	},
 ];
@@ -74,7 +73,7 @@ exports.create = [
 		if (!errors.isEmpty()) {
 			// There are errors.
 			res.json({
-				user: req.user ? req.user.forPublic : false,
+				user: req.user ? req.user : false,
 				comment: req.body,
 				errors: errors.array(),
 			});
@@ -92,7 +91,7 @@ exports.create = [
 				} else {
 					// Successful
 					res.json({
-						user: req.user ? req.user.forPublic : false,
+						user: req.user ? req.user : false,
 						comment,
 					});
 				}
@@ -105,8 +104,7 @@ exports.show = [
 	beforeMiddlewares.validMongooseObjectIdRouteParams,
 	(req, res, next) => {
 		Comment.findOne({ post: req.params.postId, _id: req.params.commentId })
-			.populate('author', 'firstName lastName username admin')
-			.populate('post')
+			.populate('author post')
 			.exec((err, comment) => {
 				if (err) {
 					next(err);
@@ -120,7 +118,7 @@ exports.show = [
 					next(err);
 				} else {
 					res.json({
-						user: req.user ? req.user.forPublic : false,
+						user: req.user ? req.user : false,
 						comment,
 					});
 				}
@@ -134,7 +132,7 @@ exports.edit = [
 	beforeMiddlewares.authorizedToUpdateComment,
 	(req, res, next) => {
 		res.json({
-			user: req.user ? req.user.forPublic : false,
+			user: req.user ? req.user : false,
 			comment: req.comment,
 		});
 	},
@@ -159,7 +157,7 @@ exports.update = [
 		if (!errors.isEmpty()) {
 			// There are errors.
 			res.json({
-				user: req.user ? req.user.forPublic : false,
+				user: req.user ? req.user : false,
 				comment: req.body,
 				errors: errors.array(),
 			});
@@ -181,7 +179,7 @@ exports.update = [
 					next(err);
 				} else {
 					res.json({
-						user: req.user.forPublic,
+						user: req.user,
 						comment: updatedComment,
 					});
 				}
@@ -216,11 +214,10 @@ exports.destroy = [
 				next(err);
 			} else {
 				Comment.findByIdAndDelete(req.params.commentId)
-					.populate('author', 'firstName lastName username admin')
-					.populate('post')
+					.populate('author post')
 					.exec((err, deletedComment) => {
 						res.json({
-							user: req.user.forPublic,
+							user: req.user,
 							comment: deletedComment,
 						});
 					});
