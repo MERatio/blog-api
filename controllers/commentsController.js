@@ -163,18 +163,17 @@ exports.update = [
 			});
 		} else {
 			// Data is valid.
-			// Create a Comment object with escaped and trimmed data and old id.
-			const comment = new Comment({
-				author: req.user._id,
-				post: req.params.postId,
-				body: req.body.body,
-				_id: req.params.commentId, // This is required, or a new ID will be assigned!
-			});
-			// Update the record.
-			Comment.findByIdAndUpdate(req.params.commentId, comment, {
-				new: true,
-				runValidators: true,
-			}).exec((err, updatedComment) => {
+			// Update the record with escaped and trimmed data.
+			Comment.findByIdAndUpdate(
+				req.params.commentId,
+				{
+					body: req.body.body,
+				},
+				{
+					new: true,
+					runValidators: true,
+				}
+			).exec((err, updatedComment) => {
 				if (err) {
 					next(err);
 				} else {

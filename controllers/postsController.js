@@ -172,19 +172,19 @@ exports.update = [
 			});
 		} else {
 			// Data is valid.
-			// Create a Post object with escaped and trimmed data and old id.
-			const post = new Post({
-				author: req.user._id,
-				title: req.body.title,
-				body: req.body.body,
-				published: req.body.published,
-				_id: req.params.postId, // This is required, or a new ID will be assigned!
-			});
-			// Update the record.
-			Post.findByIdAndUpdate(req.params.postId, post, {
-				new: true,
-				runValidators: true,
-			})
+			// Update the record with escaped and trimmed data.
+			Post.findByIdAndUpdate(
+				req.params.postId,
+				{
+					title: req.body.title,
+					body: req.body.body,
+					published: req.body.published,
+				},
+				{
+					new: true,
+					runValidators: true,
+				}
+			)
 				.populate('author')
 				.exec((err, updatedPost) => {
 					if (err) {
