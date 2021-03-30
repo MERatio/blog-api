@@ -222,7 +222,7 @@ exports.destroy = [
 	beforeMiddlewares.admin,
 	beforeMiddlewares.validMongooseObjectIdRouteParams,
 	(req, res, next) => {
-		Post.findByIdAndDelete(req.params.postId)
+		Post.findById(req.params.postId)
 			.populate('author comments')
 			.exec((err, post) => {
 				if (err) {
@@ -232,13 +232,19 @@ exports.destroy = [
 					err.status = 404;
 					next(err);
 				} else {
-					Comment.deleteMany({ post: post._id }, (err) => {
+					post.remove((err, post) => {
 						if (err) {
 							next(err);
 						} else {
-							res.json({
-								user: req.user,
-								post,
+							Comment.deleteMany({ post: post._id }, (err) => {
+								if (err) {
+									next(err);
+								} else {
+									res.json({
+										user: req.user,
+										post,
+									});
+								}
 							});
 						}
 					});
