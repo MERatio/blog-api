@@ -5,6 +5,7 @@ const beforeMiddlewares = require('../lib/beforeMiddlewares');
 
 // Models
 const Post = require('../models/post');
+const User = require('../models/user');
 const Comment = require('../models/comment');
 
 exports.index = (req, res, next) => {
@@ -74,14 +75,27 @@ exports.create = [
 				body: req.body.body,
 				published: req.body.published,
 			});
+
 			post.save((err, post) => {
 				if (err) {
 					next(err);
 				} else {
 					// Successful
-					res.json({
-						user: req.user,
-						post,
+					req.user.posts.push(post._id);
+					req.user.save((err) => {
+						if (err) {
+							Post.deleteOne({ _id: post._id }).exec((err) => {
+								if (err) {
+									return next(err);
+								}
+							});
+							return next(err);
+						} else {
+							res.json({
+								user: req.user,
+								post,
+							});
+						}
 					});
 				}
 			});
