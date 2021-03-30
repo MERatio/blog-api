@@ -8,6 +8,7 @@ const PostSchema = new Schema(
 		title: { type: String, required: true, maxlength: 60 },
 		body: { type: String, required: true, maxlength: 1000 },
 		published: { type: Boolean, required: true, default: false },
+		comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
 	},
 	{
 		// Add createdAt and updatedAt fields
