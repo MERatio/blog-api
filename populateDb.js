@@ -34,49 +34,46 @@ const users = [];
 const posts = [];
 const comments = [];
 
-const userCreate = (firstName, lastName, username, password, admin, cb) => {
-  const userDetail = { firstName, lastName, username, password, admin };
-  const user = new User(userDetail);
-  user.save((err) => {
-    if (err) {
-      cb(err, null);
-      return;
-    }
-    console.log('New User: ' + user);
-    users.push(user);
-    cb(null, user);
-  });
-};
+async function userCreate(firstName, lastName, username, password, admin, cb) {
+  try {
+    const userDetail = { firstName, lastName, username, password, admin };
+    const user = new User(userDetail);
+    const savedUser = await user.save();
+    console.log('New User: ' + savedUser);
+    users.push(savedUser);
+    cb(null, savedUser);
+  } catch (err) {
+    cb(err, null);
+  }
+}
 
-const postCreate = (author, title, body, published, cb) => {
-  const postDetail = { author, title, body, published };
-  const post = new Post(postDetail);
-  post.save((err) => {
-    if (err) {
-      cb(err, null);
-      return;
-    }
-    console.log('New post: ' + post);
-    posts.push(post);
-    cb(null, post);
-  });
-};
+async function postCreate(author, title, body, published, cb) {
+  try {
+    const postDetail = { author, title, body, published };
+    const post = new Post(postDetail);
+    const savedPost = await post.save();
+    console.log('New post: ' + savedPost);
+    posts.push(savedPost);
+    cb(null, savedPost);
+  } catch (err) {
+    cb(err, null);
+  }
+}
 
-const commentCreate = (author, post, body, cb) => {
-  const commentDetail = { author, post, body };
-  const comment = new Comment(commentDetail);
-  comment.save((err) => {
-    if (err) {
-      cb(err, null);
-      return;
-    }
-    console.log('New comment: ' + comment);
-    comments.push(comment);
-    cb(null, comment);
-  });
-};
+async function commentCreate(author, post, body, cb) {
+  try {
+    const commentDetail = { author, post, body };
+    const comment = new Comment(commentDetail);
+    const savedComment = await comment.save();
+    console.log('New comment: ' + savedComment);
+    comments.push(savedComment);
+    cb(null, savedComment);
+  } catch (err) {
+    cb(err, null);
+  }
+}
 
-const createUsers = (cb) => {
+function createUsers(cb) {
   async.series(
     [
       (callback) => {
@@ -107,9 +104,9 @@ const createUsers = (cb) => {
     // Optional callback
     cb
   );
-};
+}
 
-const createPosts = (cb) => {
+function createPosts(cb) {
   async.series(
     [
       (callback) => {
@@ -152,9 +149,9 @@ const createPosts = (cb) => {
     // Optional callback
     cb
   );
-};
+}
 
-const createComments = (cb) => {
+function createComments(cb) {
   async.series(
     [
       (callback) => {
@@ -193,7 +190,7 @@ const createComments = (cb) => {
     // Optional callback
     cb
   );
-};
+}
 
 async.series(
   [createUsers, createPosts, createComments],
