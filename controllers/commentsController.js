@@ -212,12 +212,18 @@ exports.destroy = [
 				err.status = 401;
 				next(err);
 			} else {
-				Comment.findByIdAndDelete(req.params.commentId)
+				Comment.findById(req.params.commentId)
 					.populate('author post')
-					.exec((err, deletedComment) => {
-						res.json({
-							user: req.user,
-							comment: deletedComment,
+					.exec((err, comment) => {
+						comment.remove((err, deletedComment) => {
+							if (err) {
+								next(err);
+							} else {
+								res.json({
+									user: req.user,
+									comment,
+								});
+							}
 						});
 					});
 			}
