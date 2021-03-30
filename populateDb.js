@@ -73,6 +73,19 @@ async function commentCreate(author, post, body, cb) {
   }
 }
 
+async function emptyCollections(models, cb) {
+  try {
+    console.log('Emptying collections...');
+    for (model of models) {
+      await model.deleteMany({});
+    }
+    console.log('Collections emptied');
+    cb(null, true);
+  } catch (err) {
+    cb(err, null);
+  }
+}
+
 function createUsers(cb) {
   async.series(
     [
@@ -193,7 +206,12 @@ function createComments(cb) {
 }
 
 async.series(
-  [createUsers, createPosts, createComments],
+  [
+    (cb) => emptyCollections([User, Post, Comment], cb),
+    createUsers,
+    createPosts,
+    createComments,
+  ],
   // Optional callback
   (err, results) => {
     if (err) {
