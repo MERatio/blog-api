@@ -14,6 +14,8 @@ const UserSchema = new Schema({
 	},
 	password: { type: String, required: true },
 	admin: { type: Boolean, required: true, default: false },
+	posts: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
+	comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
 });
 
 UserSchema.set('toJSON', {
