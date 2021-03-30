@@ -16,4 +16,19 @@ const PostSchema = new Schema(
 	}
 );
 
+PostSchema.pre('remove', async function () {
+	// Remove the post._id from author.posts
+	const author = await this.model('User').findById(
+		this.author._id || this.author
+	);
+	author.posts.pull({ _id: this._id });
+	await author.save();
+
+	// Remove the post's comments
+	const comments = await this.model('Comment').find({ post: this._id });
+	comments.forEach(async (comment) => {
+		await comment.remove();
+	});
+});
+
 module.exports = mongoose.model('Post', PostSchema);

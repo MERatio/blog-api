@@ -232,19 +232,13 @@ exports.destroy = [
 					err.status = 404;
 					next(err);
 				} else {
-					post.remove((err, post) => {
+					post.remove((err, deletedPost) => {
 						if (err) {
 							next(err);
 						} else {
-							Comment.deleteMany({ post: post._id }, (err) => {
-								if (err) {
-									next(err);
-								} else {
-									res.json({
-										user: req.user,
-										post,
-									});
-								}
+							res.json({
+								user: req.user,
+								post,
 							});
 						}
 					});
