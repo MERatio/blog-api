@@ -10,7 +10,7 @@ const Comment = require('../models/comment');
 exports.index = (req, res, next) => {
 	Post.find(req.user && req.user.admin ? {} : { published: true })
 		.sort('-createdAt')
-		.populate('author')
+		.populate('author comments')
 		.exec((err, posts) => {
 			if (err) {
 				next(err);
@@ -93,7 +93,7 @@ exports.show = [
 	beforeMiddlewares.validMongooseObjectIdRouteParams,
 	(req, res, next) => {
 		Post.findById(req.params.postId)
-			.populate('author')
+			.populate('author comments')
 			.exec((err, post) => {
 				if (err) {
 					next(err);
@@ -120,7 +120,7 @@ exports.edit = [
 	beforeMiddlewares.validMongooseObjectIdRouteParams,
 	(req, res, next) => {
 		Post.findById(req.params.postId)
-			.populate('author')
+			.populate('author comments')
 			.exec((err, post) => {
 				if (err) {
 					next(err);
@@ -185,7 +185,7 @@ exports.update = [
 					runValidators: true,
 				}
 			)
-				.populate('author')
+				.populate('author comments')
 				.exec((err, updatedPost) => {
 					if (err) {
 						next(err);
@@ -209,7 +209,7 @@ exports.destroy = [
 	beforeMiddlewares.validMongooseObjectIdRouteParams,
 	(req, res, next) => {
 		Post.findByIdAndDelete(req.params.postId)
-			.populate('author')
+			.populate('author comments')
 			.exec((err, post) => {
 				if (err) {
 					next(err);
