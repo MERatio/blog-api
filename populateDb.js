@@ -52,6 +52,8 @@ async function postCreate(author, title, body, published, cb) {
     const postDetail = { author, title, body, published };
     const post = new Post(postDetail);
     const savedPost = await post.save();
+    author.posts.push(savedPost._id);
+    await author.save();
     console.log('New post: ' + savedPost);
     posts.push(savedPost);
     cb(null, savedPost);
@@ -65,6 +67,10 @@ async function commentCreate(author, post, body, cb) {
     const commentDetail = { author, post, body };
     const comment = new Comment(commentDetail);
     const savedComment = await comment.save();
+    author.comments.push(savedComment._id);
+    await author.save();
+    post.comments.push(savedComment._id);
+    await post.save();
     console.log('New comment: ' + savedComment);
     comments.push(savedComment);
     cb(null, savedComment);
