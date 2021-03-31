@@ -84,7 +84,7 @@ exports.create = [
 					req.user.posts.push(post._id);
 					req.user.save((err) => {
 						if (err) {
-							Post.deleteOne({ _id: post._id }).exec((err) => {
+							post.remove((err) => {
 								if (err) {
 									return next(err);
 								}
