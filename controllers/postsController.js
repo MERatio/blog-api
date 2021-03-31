@@ -232,7 +232,7 @@ exports.destroy = [
 					err.status = 404;
 					next(err);
 				} else {
-					post.remove((err, deletedPost) => {
+					post.remove((err) => {
 						if (err) {
 							next(err);
 						} else {
