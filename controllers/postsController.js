@@ -108,7 +108,13 @@ exports.show = [
 	(req, res, next) => {
 		Post.findById(req.params.postId)
 			.populate('author')
-			.populate({ path: 'comments', populate: { path: 'author' } })
+			.populate({
+				path: 'comments',
+				populate: { path: 'author' },
+				options: {
+					sort: { createdAt: -1 },
+				},
+			})
 			.exec((err, post) => {
 				if (err) {
 					next(err);
