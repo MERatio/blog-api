@@ -209,6 +209,7 @@ exports.update = [
 				.populate('author')
 				.populate({
 					path: 'comments',
+					populate: { path: 'author' },
 					options: {
 						sort: { createdAt: -1 },
 					},
