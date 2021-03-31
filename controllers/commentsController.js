@@ -90,9 +90,38 @@ exports.create = [
 					next(err);
 				} else {
 					// Successful
-					res.json({
-						user: req.user ? req.user : false,
-						comment,
+					req.user.comments.push(comment._id);
+					req.user.save((err) => {
+						if (err) {
+							comment.remove((err) => {
+								return next(err);
+							});
+							return next(err);
+						} else {
+							Post.findById(req.params.postId).exec((err, post) => {
+								if (err) {
+									comment.remove((err) => {
+										return next(err);
+									});
+									return next(err);
+								} else {
+									post.comments.push(comment._id);
+									post.save((err) => {
+										if (err) {
+											comment.remove((err) => {
+												return next(err);
+											});
+											return next(err);
+										} else {
+											res.json({
+												user: req.user ? req.user : false,
+												comment,
+											});
+										}
+									});
+								}
+							});
+						}
 					});
 				}
 			});
