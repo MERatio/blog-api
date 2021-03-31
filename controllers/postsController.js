@@ -107,7 +107,8 @@ exports.show = [
 	beforeMiddlewares.validMongooseObjectIdRouteParams,
 	(req, res, next) => {
 		Post.findById(req.params.postId)
-			.populate('author comments')
+			.populate('author')
+			.populate({ path: 'comments', populate: { path: 'author' } })
 			.exec((err, post) => {
 				if (err) {
 					next(err);
