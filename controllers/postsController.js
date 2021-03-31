@@ -206,7 +206,13 @@ exports.update = [
 					runValidators: true,
 				}
 			)
-				.populate('author comments')
+				.populate('author')
+				.populate({
+					path: 'comments',
+					options: {
+						sort: { createdAt: -1 },
+					},
+				})
 				.exec((err, updatedPost) => {
 					if (err) {
 						next(err);
